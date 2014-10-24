@@ -17,8 +17,6 @@ RUN \
   echo opal opal-server/admin_password_again select password | sudo debconf-set-selections && \
   apt-get update && apt-get install -y opal opal-python-client
 
-#RUN echo JAVA_ARGS=\"\$JAVA_ARGS -DMONGODB_PORT=\$MONGODB_PORT\" >> /etc/default/opal
-
 # Define mountable directories.
 VOLUME ["/data/opal"]
 
