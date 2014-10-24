@@ -1,3 +1,7 @@
+#
+# Docker helper
+#
+
 help:
 	@echo "make build run-mongodb run stop clean"
 
@@ -14,12 +18,20 @@ build:
 	sudo docker build -t="obiba/opal:snapshot" .
 
 # Run a Opal Docker instance
-run:
+run-default:
 	sudo docker run -d -p 8843:8443 --name opal --link mongodb:mongodb obiba/opal:snapshot
 
 # Run a Opal Docker instance with database setup
-run-setup:
+run:
 	sudo docker run -d -p 8843:8443 --name opal --link mongodb:mongodb -v `pwd`/data:/data obiba/opal:snapshot bash start.sh
+
+# Run a Opal Docker instance with shell
+run-sh:
+	sudo docker run -ti -p 8843:8443 --name opal --link mongodb:mongodb -v `pwd`/data:/data obiba/mica:snapshot bash
+
+# Show logs
+logs:
+	sudo docker logs opal
 
 # Stop a Opal Docker instance
 stop:
