@@ -17,14 +17,12 @@ RUN \
   echo opal opal-server/admin_password_again select password | sudo debconf-set-selections && \
   apt-get update && apt-get install -y opal opal-python-client
 
-# Define mountable directories.
-VOLUME ["/data/opal"]
+COPY bin /opt/opal/bin
 
-# Define working directory.
-WORKDIR /data
+RUN chmod +x -R /opt/opal/bin
 
 # Define default command.
-CMD ["service", "opal", "start"]
+ENTRYPOINT ["bash", "-c", "/opt/opal/bin/start.sh"]
 
 # https
 EXPOSE 8443

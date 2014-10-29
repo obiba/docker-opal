@@ -18,16 +18,12 @@ build:
 	sudo docker build -t="obiba/opal:snapshot" .
 
 # Run a Opal Docker instance
-run-default:
-	sudo docker run -d -p 8843:8443 --name opal --link mongodb:mongodb obiba/opal:snapshot
-
-# Run a Opal Docker instance with database setup
 run:
-	sudo docker run -d -p 8843:8443 --name opal --link mongodb:mongodb -v `pwd`/data:/data obiba/opal:snapshot bash start.sh
+	sudo docker run -d -p 8843:8443 --name opal --link mongodb:mongodb obiba/opal:snapshot
 
 # Run a Opal Docker instance with shell
 run-sh:
-	sudo docker run -ti -p 8843:8443 --name opal --link mongodb:mongodb -v `pwd`/data:/data obiba/mica:snapshot bash
+	sudo docker run -ti -p 8843:8443 --name opal --link mongodb:mongodb obiba/opal:snapshot bash
 
 # Show logs
 logs:
