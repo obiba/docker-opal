@@ -1,8 +1,19 @@
+#!/bin/bash
+
+# Start opal as a service
 service opal start
 
+# Wait for the opal server to be up and running
 sleep 30
 
-echo "{\"usedForIdentifiers\": true, \"name\": \"_identifiers\", \"usage\": \"STORAGE\", \"defaultStorage\": false, \"mongoDbSettings\": { \"url\": \"mongodb://$MONGODB_PORT_27017_TCP_ADDR:$MONGODB_PORT_27017_TCP_PORT/opal_ids\", \"username\": \"\", \"password\": \"\", \"properties\": \"\" }}" | opal rest -o https://localhost:8443 -u administrator -p password -m POST /system/databases --content-type "application/json"
-echo "{\"usedForIdentifiers\": false, \"name\": \"mongodb\", \"usage\": \"STORAGE\", \"defaultStorage\": true, \"mongoDbSettings\": { \"url\": \"mongodb://$MONGODB_PORT_27017_TCP_ADDR:$MONGODB_PORT_27017_TCP_PORT/opal_data\", \"username\": \"\", \"password\": \"\",  \"properties\": \"\" }}" | opal rest -o https://localhost:8443 -u administrator -p password -m POST /system/databases --content-type "application/json"
+# Configure some databases for IDs and data
+sed s/@mongo_host@/$MONGODB_PORT_27017_TCP_ADDR/g /opt/opal/data/idsdb.json | \
+  sed s/@mongo_port@/$MONGODB_PORT_27017_TCP_PORT/g | \
+  opal rest -o https://localhost:8443 -u administrator -p password -m POST /system/databases --content-type "application/json"
 
+sed s/@mongo_host@/$MONGODB_PORT_27017_TCP_ADDR/g /opt/opal/data/mongodb.json | \
+  sed s/@mongo_port@/$MONGODB_PORT_27017_TCP_PORT/g | \
+  opal rest -o https://localhost:8443 -u administrator -p password -m POST /system/databases --content-type "application/json"
+
+# Tail the log
 tail -f /var/log/opal/opal.log

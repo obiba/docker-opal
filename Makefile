@@ -15,15 +15,15 @@ images:
 
 # Build Opal Docker image
 build:
-	sudo docker build -t="obiba/opal:snapshot" .
+	sudo docker build --no-cache=true -t="obiba/opal:snapshot" .
 
 # Run a Opal Docker instance
 run:
-	sudo docker run -d -p 8843:8443 --name opal --link mongodb:mongodb obiba/opal:snapshot
+	sudo docker run -d -p 8843:8443 -p 8880:8080 --name opal --link mongodb:mongodb obiba/opal:snapshot
 
 # Run a Opal Docker instance with shell
 run-sh:
-	sudo docker run -ti -p 8843:8443 --name opal --link mongodb:mongodb obiba/opal:snapshot bash
+	sudo docker run -ti -p 8843:8443 -p 8880:8080 --name opal --link mongodb:mongodb obiba/opal:snapshot bash
 
 # Show logs
 logs:

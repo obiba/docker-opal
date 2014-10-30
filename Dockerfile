@@ -18,11 +18,14 @@ RUN \
   apt-get update && apt-get install -y opal opal-python-client
 
 COPY bin /opt/opal/bin
+COPY data /opt/opal/data
 
 RUN chmod +x -R /opt/opal/bin
 
 # Define default command.
-ENTRYPOINT ["bash", "-c", "/opt/opal/bin/start.sh"]
+ENTRYPOINT ["/opt/opal/bin/start.sh"]
 
 # https
 EXPOSE 8443
+# http
+EXPOSE 8080
