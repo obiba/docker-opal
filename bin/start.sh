@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Start opal as a service
 service opal start
 

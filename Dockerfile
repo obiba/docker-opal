@@ -15,7 +15,7 @@ RUN \
   echo 'deb http://pkg.obiba.org unstable/' | sudo tee /etc/apt/sources.list.d/obiba.list && \
   echo opal opal-server/admin_password select password | sudo debconf-set-selections && \
   echo opal opal-server/admin_password_again select password | sudo debconf-set-selections && \
-  apt-get update && apt-get install -y opal opal-python-client
+  apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y opal opal-python-client
 
 COPY bin /opt/opal/bin
 COPY data /opt/opal/data
@@ -23,7 +23,7 @@ COPY data /opt/opal/data
 RUN chmod +x -R /opt/opal/bin
 
 # Define default command.
-ENTRYPOINT ["/opt/opal/bin/start.sh"]
+ENTRYPOINT ["bash", "-c", "/opt/opal/bin/start.sh"]
 
 # https
 EXPOSE 8443

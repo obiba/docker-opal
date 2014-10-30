@@ -2,12 +2,10 @@
 # Docker helper
 #
 
+no_cache=false
+
 help:
 	@echo "make build run-mongodb run stop clean"
-
-# List Docker images
-images:
-	sudo docker images
 
 #
 # Opal
@@ -15,7 +13,7 @@ images:
 
 # Build Opal Docker image
 build:
-	sudo docker build --no-cache=true -t="obiba/opal:snapshot" .
+	sudo docker build --no-cache=$(no_cache) -t="obiba/opal:snapshot" .
 
 # Run a Opal Docker instance
 run:
