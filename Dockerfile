@@ -9,6 +9,10 @@ FROM dockerfile/java:oracle-java8
 
 MAINTAINER OBiBa <dev@obiba.org>
 
+ENV LANG C.UTF-8
+ENV LANGUAGE C.UTF-8
+ENV LC_ALL C.UTF-8
+
 # Install Opal
 RUN \
   wget -q -O - http://pkg.obiba.org/obiba.org.key | sudo apt-key add - && \
