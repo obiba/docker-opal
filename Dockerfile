@@ -5,7 +5,7 @@
 #
 
 # Pull base image
-FROM dockerfile/java:oracle-java8
+FROM java:8
 
 MAINTAINER OBiBa <dev@obiba.org>
 
