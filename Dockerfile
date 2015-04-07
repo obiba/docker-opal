@@ -18,7 +18,8 @@ RUN \
   wget -q -O - http://pkg.obiba.org/obiba.org.key | apt-key add - && \
   echo 'deb http://pkg.obiba.org unstable/' | tee /etc/apt/sources.list.d/obiba.list && \
   echo opal opal-server/admin_password select password | debconf-set-selections && \
-  echo opal opal-server/admin_password_again select password | debconf-set-selections
+  echo opal opal-server/admin_password_again select password | debconf-set-selections && \
+  apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y opal opal-python-client
 
 COPY bin /opt/opal/bin
 COPY data /opt/opal/data
