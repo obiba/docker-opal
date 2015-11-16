@@ -1,0 +1,9 @@
+opal:
+  image: obiba/opal:snapshot
+  ports:
+  - "8843:8443"
+  - "8880:8080"
+  links:
+  - mongodb-obiba:mongo
+mongodb-obiba:
+  image: mongo
