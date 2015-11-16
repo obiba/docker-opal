@@ -32,7 +32,5 @@ RUN chmod +x -R /opt/opal/bin
 # Define default command.
 ENTRYPOINT ["bash", "-c", "/opt/opal/bin/start.sh"]
 
-# https
-EXPOSE 8443
-# http
-EXPOSE 8080
+# https and http
+EXPOSE 8443 8080
