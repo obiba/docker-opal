@@ -30,7 +30,7 @@ COPY data /opt/opal/data
 RUN chmod +x -R /opt/opal/bin
 
 # Define default command.
-ENTRYPOINT ["bash", "-c", "/opt/opal/bin/start.sh"]
+ENTRYPOINT ["/opt/opal/bin/start.sh"]
 
 # https and http
 EXPOSE 8443 8080

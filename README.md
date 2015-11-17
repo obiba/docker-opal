@@ -1,15 +1,10 @@
 Docker Opal
 ===========
 
-Default launch of a Opal container:
-
-`sudo docker run -d -p 8843:8443 obiba/opal:snapshot`
-
-To link with a MongoDB container, use the Makefile:
+Use [docker compose](https://docs.docker.com/compose/) to launch opal, agate and mongodb applications:
 
 ```
-make run-mongodb
-make run
+docker-compose up
 ```
 
 Then connect to:

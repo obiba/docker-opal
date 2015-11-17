@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Configure some databases for IDs and data
 echo "Initializing Opal databases..."
 while [ `opal rest -o https://localhost:8443 -u administrator -p password -m GET /system/databases | grep -ch "mongodb"` -eq 0 ]

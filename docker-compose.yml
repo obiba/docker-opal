@@ -5,5 +5,13 @@ opal:
   - "8880:8080"
   links:
   - mongodb-obiba:mongo
+  - agate
+agate:
+  image: obiba/agate:snapshot
+  ports:
+  - "8844:8444"
+  - "8881:8081"
+  links:
+  - mongodb-obiba:mongo
 mongodb-obiba:
   image: mongo
