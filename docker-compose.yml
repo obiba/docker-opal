@@ -6,6 +6,12 @@ opal:
   links:
   - mongodb-obiba:mongo
   - agate
+  - rserver
+rserver:
+  image: obiba/opal-rserver:snapshot
+  ports:
+  - "6612:6312"
+  - "6611:6311"
 agate:
   image: obiba/agate:snapshot
   ports:
