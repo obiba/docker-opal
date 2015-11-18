@@ -13,7 +13,10 @@ fi
 service opal start
 
 # Wait for the opal server to be up and running
-sleep 5
+until ls /var/log/opal/opal.log &> /dev/null
+do
+	sleep 1
+done
 
 # check if 1st run. Then configure database.
 if [ -e /opt/opal/bin/first_run.sh ]
