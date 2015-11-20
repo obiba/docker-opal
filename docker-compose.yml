@@ -7,6 +7,8 @@ opal:
   - mongo
   - agate
   - rserver
+  environment:
+  - OPAL_ADMINISTRATOR_PASSWORD=password
 rserver:
   image: obiba/opal-rserver:snapshot
   ports:
