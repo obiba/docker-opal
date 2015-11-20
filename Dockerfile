@@ -29,6 +29,8 @@ COPY data /opt/opal/data
 
 RUN chmod +x -R /opt/opal/bin
 
+ENV OPAL_ADMINISTRATOR_PASSWORD=password
+
 # Define default command.
 ENTRYPOINT ["/opt/opal/bin/start.sh"]
 

@@ -14,6 +14,13 @@ if [ -n "$RSERVER_PORT_6312_TCP_ADDR" -a -e /opt/opal/bin/first_run.sh ]
 	mv -f /tmp/opal-config.properties /etc/opal/opal-config.properties
 fi
 
+if [ -e /opt/opal/bin/first_run.sh ]
+    then
+    adminpw=$(echo -n $OPAL_ADMINISTRATOR_PASSWORD | xargs java -jar /usr/share/opal-*/tools/lib/obiba-password-hasher-*-cli.jar)
+    cat /etc/opal/shiro.ini | sed -e "s/^administrator\s*=.*,/administrator=$adminpw,/" > /tmp/shiro.ini && \
+          mv /tmp/shiro.ini /etc/opal/shiro.ini
+fi
+
 chown -R opal:adm /etc/opal
 
 # Start opal as a service
