@@ -31,6 +31,8 @@ RUN chmod +x -R /opt/opal/bin
 
 ENV OPAL_ADMINISTRATOR_PASSWORD=password
 
+VOLUME /var/lib/opal /var/log/opal
+
 # Define default command.
 ENTRYPOINT ["/opt/opal/bin/start.sh"]
 
