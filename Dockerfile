@@ -13,6 +13,10 @@ ENV LANG C.UTF-8
 ENV LANGUAGE C.UTF-8
 ENV LC_ALL C.UTF-8
 
+ENV OPAL_ADMINISTRATOR_PASSWORD=password
+ENV OPAL_HOME=/srv
+ENV JAVA_OPTS="-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
+
 # Install Opal
 RUN \
   apt-get update && \
@@ -24,17 +28,19 @@ RUN \
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -y opal opal-python-client
 
+RUN chmod +x /usr/share/opal/bin/opal
+
 COPY bin /opt/opal/bin
 COPY data /opt/opal/data
 
 RUN chmod +x -R /opt/opal/bin
 
-ENV OPAL_ADMINISTRATOR_PASSWORD=password
+VOLUME /srv
 
-VOLUME /var/lib/opal /etc/opal /var/log/opal
+# https and http
+EXPOSE 8443 8080
 
 # Define default command.
 ENTRYPOINT ["/opt/opal/bin/start.sh"]
 
-# https and http
-EXPOSE 8443 8080
+

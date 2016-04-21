@@ -9,6 +9,8 @@ opal:
   - rserver
   environment:
   - OPAL_ADMINISTRATOR_PASSWORD=password
+  volumes:
+  - /tmp/opal:/srv
 rserver:
   image: obiba/opal-rserver:snapshot
   ports:
@@ -21,5 +23,7 @@ agate:
   - "8881:8081"
   links:
   - mongo
+  volumes:
+  - /tmp/agate:/srv
 mongo:
   image: mongo
