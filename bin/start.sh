@@ -21,30 +21,29 @@ if [ -n "$RSERVER_PORT_6312_TCP_ADDR" -a -e /opt/opal/bin/first_run.sh ]
 	mv -f /tmp/opal-config.properties $OPAL_HOME/conf/opal-config.properties
 fi
 
-if [ -e /opt/opal/bin/first_run.sh ]
+if [ -e /opt/opal/bin/set_password.sh ]
     then
-    adminpw=$(echo -n $OPAL_ADMINISTRATOR_PASSWORD | xargs java -jar /usr/share/opal-*/tools/lib/obiba-password-hasher-*-cli.jar)
-    cat $OPAL_HOME/conf/shiro.ini | sed -e "s/^administrator\s*=.*,/administrator=$adminpw,/" > /tmp/shiro.ini && \
-          mv /tmp/shiro.ini $OPAL_HOME/conf/shiro.ini
+    /opt/opal/bin/set_password.sh
+    mv /opt/opal/bin/set_password.sh /opt/opal/bin/set_password.sh.done
 fi
-
-chown -R opal:adm $OPAL_HOME/conf
 
 # Start opal
-/usr/share/opal/bin/opal &
-
-# Wait for the opal server to be up and running
-echo "Waiting for Opal to be ready..."
-until opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m GET /system/databases &> /dev/null
-do
-    sleep 5
-done
-
-# check if 1st run. Then configure database and datashield.
-if [ -e /opt/opal/bin/first_run.sh ]
+if [ -n "$MONGO_PORT_27017_TCP_ADDR" -a -e /opt/opal/bin/first_run.sh ]
     then
+    # check if 1st run. Then configure database and datashield.
+	/usr/share/opal/bin/opal &
+
+	# Wait for the opal server to be up and running
+	echo "Waiting for Opal to be ready..."
+	until opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m GET /system/databases &> /dev/null
+	do
+	    sleep 5
+	done
+
     /opt/opal/bin/first_run.sh
     mv /opt/opal/bin/first_run.sh /opt/opal/bin/first_run.sh.done
-fi
 
-tail -f $OPAL_HOME/logs/opal.log
+    tail -f $OPAL_HOME/logs/opal.log
+else
+	/usr/share/opal/bin/opal
+fi
