@@ -50,8 +50,8 @@ RUN chown -R opal /opt/opal
 
 VOLUME /srv
 
-# http
-EXPOSE 8080
+# https and http
+EXPOSE 8443 8080
 
 # Define default command.
 COPY ./docker-entrypoint.sh /
