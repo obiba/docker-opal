@@ -1,0 +1,29 @@
+opal:
+  image: obiba/opal:branch-snapshot
+  ports:
+  - "8843:8443"
+  - "8880:8080"
+  links:
+  - mongo
+  - agate
+  - rserver
+  environment:
+  - OPAL_ADMINISTRATOR_PASSWORD=password
+  volumes:
+  - /tmp/opal:/srv
+rserver:
+  image: obiba/opal-rserver:snapshot
+  ports:
+  - "6612:6312"
+  - "6611:6311"
+agate:
+  image: obiba/agate:branch-snapshot
+  ports:
+  - "8844:8444"
+  - "8881:8081"
+  links:
+  - mongo
+  volumes:
+  - /tmp/agate:/srv
+mongo:
+  image: mongo

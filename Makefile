@@ -8,5 +8,8 @@ no_cache=false
 build:
 	sudo docker build --no-cache=$(no_cache) -t="obiba/opal:snapshot" .
 
-build25x:
-	sudo docker build --no-cache=$(no_cache) -t="obiba/opal:2.5-snapshot" 2.5-snapshot 
+build-version:
+	sudo docker build --no-cache=$(no_cache) -t="obiba/opal:$(version)" $(version) 
+
+build-branch:
+	sudo docker build --no-cache=$(no_cache) -t="obiba/opal:branch-snapshot" branch-snapshot 
