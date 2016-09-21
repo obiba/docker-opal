@@ -1,5 +1,5 @@
 opal:
-  image: obiba/opal:branch-snapshot
+  image: obiba/opal:2.5
   ports:
   - "8843:8443"
   - "8880:8080"
@@ -12,12 +12,12 @@ opal:
   volumes:
   - /tmp/opal:/srv
 rserver:
-  image: obiba/opal-rserver:snapshot
+  image: obiba/opal-rserver:latest
   ports:
   - "6612:6312"
   - "6611:6311"
 agate:
-  image: obiba/agate:branch-snapshot
+  image: obiba/agate:latest
   ports:
   - "8844:8444"
   - "8881:8081"
