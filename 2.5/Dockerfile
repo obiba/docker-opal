@@ -52,7 +52,8 @@ RUN set -x && \
 
 RUN chmod +x /usr/share/opal/bin/opal
 
-COPY ./bin /opt/opal/bin
+COPY bin /opt/opal/bin
+COPY data /opt/opal/data
 
 RUN chmod +x -R /opt/opal/bin
 RUN adduser --system --home $OPAL_HOME --no-create-home --disabled-password opal
