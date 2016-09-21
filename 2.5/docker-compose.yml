@@ -5,25 +5,31 @@ opal:
   - "8880:8080"
   links:
   - mongo
-  - agate
-  - rserver
+  - mysqldata
+  - mysqlids
   environment:
+  - MYSQLDATA_DATABASE=opal
+  - MYSQLDATA_USER=opal
+  - MYSQLDATA_PASSWORD=password
+  - MYSQLIDS_DATABASE=opal
+  - MYSQLIDS_USER=opal
+  - MYSQLIDS_PASSWORD=password
   - OPAL_ADMINISTRATOR_PASSWORD=password
   volumes:
   - /tmp/opal:/srv
-rserver:
-  image: obiba/opal-rserver:latest
-  ports:
-  - "6612:6312"
-  - "6611:6311"
-agate:
-  image: obiba/agate:latest
-  ports:
-  - "8844:8444"
-  - "8881:8081"
-  links:
-  - mongo
-  volumes:
-  - /tmp/agate:/srv
 mongo:
   image: mongo
+mysqldata:
+  image: mysql
+  environment:
+  - MYSQL_DATABASE=opal
+  - MYSQL_ROOT_PASSWORD=password
+  - MYSQL_USER=opal
+  - MYSQL_PASSWORD=password
+mysqlids:
+  image: mysql
+  environment:
+  - MYSQL_DATABASE=opal
+  - MYSQL_ROOT_PASSWORD=password
+  - MYSQL_USER=opal
+  - MYSQL_PASSWORD=password

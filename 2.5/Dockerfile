@@ -29,7 +29,7 @@ ENV OPAL_ADMINISTRATOR_PASSWORD=password
 ENV OPAL_HOME=/srv
 ENV JAVA_OPTS="-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
 
-ENV OPAL_VERSION 2.5.2
+ENV OPAL_VERSION 2.5.3
 
 # Install Opal Python Client
 RUN \
@@ -45,7 +45,7 @@ RUN \
 # Install Opal Server
 RUN set -x && \
   cd /usr/share/ && \
-  wget -q -O opal.zip https://download.obiba.org/opal/stable/opal-server-${OPAL_VERSION}-dist.zip && \
+  wget -O opal.zip https://download.obiba.org/opal/stable/opal-server-${OPAL_VERSION}-dist.zip && \
   unzip -q opal.zip && \
   rm opal.zip && \
   mv opal-server-${OPAL_VERSION} opal
