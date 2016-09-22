@@ -5,7 +5,7 @@
 #
 
 # Pull base image
-FROM java:8
+FROM openjdk:8
 
 MAINTAINER OBiBa <dev@obiba.org>
 
@@ -45,7 +45,7 @@ RUN \
 # Install Opal Server
 RUN set -x && \
   cd /usr/share/ && \
-  wget -O opal.zip https://download.obiba.org/opal/stable/opal-server-${OPAL_VERSION}-dist.zip && \
+  wget -q -O opal.zip https://download.obiba.org/opal/stable/opal-server-${OPAL_VERSION}-dist.zip && \
   unzip -q opal.zip && \
   rm opal.zip && \
   mv opal-server-${OPAL_VERSION} opal

@@ -28,7 +28,7 @@ if [ -e /opt/opal/bin/set_password.sh ]
 fi
 
 # Start opal
-if [ -n "$MONGO_PORT_27017_TCP_ADDR" -a -e /opt/opal/bin/first_run.sh ]
+if [ -e /opt/opal/bin/first_run.sh ]
     then
     # check if 1st run. Then configure database and datashield.
 	/usr/share/opal/bin/opal &

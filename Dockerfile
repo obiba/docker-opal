@@ -5,7 +5,7 @@
 #
 
 # Pull base image
-FROM java:8
+FROM openjdk:8
 
 MAINTAINER OBiBa <dev@obiba.org>
 
