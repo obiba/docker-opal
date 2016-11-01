@@ -1,0 +1,6 @@
+{"usedForIdentifiers": true, "name": "_identifiers", "usage": "STORAGE", "defaultStorage": false, "mongoDbSettings": {
+    "url": "mongodb://@mongo_host@:@mongo_port@/opal_ids",
+    "username": "",
+    "password": "",
+    "properties": ""
+}}

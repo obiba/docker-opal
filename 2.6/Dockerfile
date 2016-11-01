@@ -29,7 +29,7 @@ ENV OPAL_ADMINISTRATOR_PASSWORD=password
 ENV OPAL_HOME=/srv
 ENV JAVA_OPTS="-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
 
-ENV OPAL_VERSION 2.6
+ENV OPAL_VERSION 2.6.0
 
 # Install Opal Python Client
 RUN \
@@ -38,17 +38,17 @@ RUN \
 
 RUN \
   wget -q -O - https://pkg.obiba.org/obiba.org.key | apt-key add - && \
-  echo 'deb https://pkg.obiba.org unstable/' | tee /etc/apt/sources.list.d/obiba.list && \
+  echo 'deb https://pkg.obiba.org stable/' | tee /etc/apt/sources.list.d/obiba.list && \
   apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y opal-python-client
+  DEBIAN_FRONTEND=noninteractive apt-get install -y opal-python-client=$(apt-cache madison opal-python-client | cut -d ' ' -f 3 | grep ${OPAL_VERSION})
 
 # Install Opal Server
 RUN set -x && \
   cd /usr/share/ && \
-  wget -q -O opal.zip https://ci.obiba.org/view/Opal/job/Opal-${OPAL_VERSION}.x/ws/opal-server/target/opal-server-${OPAL_VERSION}-SNAPSHOT-dist.zip && \
+  wget -q -O opal.zip https://download.obiba.org/opal/stable/opal-server-${OPAL_VERSION}-dist.zip && \
   unzip -q opal.zip && \
   rm opal.zip && \
-  mv opal-server-${OPAL_VERSION}-SNAPSHOT opal
+  mv opal-server-${OPAL_VERSION} opal
 
 RUN chmod +x /usr/share/opal/bin/opal
 
