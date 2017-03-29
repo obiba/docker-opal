@@ -61,7 +61,7 @@ RUN apt-get update; \
 # install Jennite
 # Replace ZIP file with apt-get when the Jennite's Debian package is ready
 RUN \
-  curl -L -o jennite-vcf-store-$VCF_STORE_VERSION-dist.zip https://download.obiba.org/jennite/unstable/jennite-vcf-store-$VCF_STORE_VERSION-dist.zip;
+  curl -L -o jennite-vcf-store-$VCF_STORE_VERSION-dist.zip https://download.obiba.org/plugins/unstable/jennite-vcf-store-$VCF_STORE_VERSION-dist.zip;
 
 # Install Opal
 RUN \
