@@ -1,7 +1,7 @@
 #
-# Opal Dockerfile
+# Mica Dockerfile
 #
-# https://github.com/obiba/docker-opal
+# https://github.com/obiba/docker-mica
 #
 
 # Pull base image
@@ -29,8 +29,9 @@ ENV OPAL_ADMINISTRATOR_PASSWORD=password
 ENV OPAL_HOME=/srv
 ENV JAVA_OPTS="-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
 
-ENV VCF_STORE_VERSION=1.1-SNAPSHOT
+ENV VCF_STORE_VERSION=1.0.0
 ENV SAMTOOLS_VERSION=1.4
+ENV OPAL_VERSION 2.9.0
 
 # Install and build Jennnite dependencies
 RUN apt-get update; \
@@ -59,20 +60,28 @@ RUN apt-get update; \
    cd ../ ; \
    rm -rf htslib samtools-$SAMTOOLS_VERSION bcftools-$SAMTOOLS_VERSION
 
-# Install Opal
+# Install Opal Python Client
 RUN \
   apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https unzip
+
+RUN \
   wget -q -O - https://pkg.obiba.org/obiba.org.key | apt-key add - && \
-  echo 'deb https://pkg.obiba.org unstable/' | tee /etc/apt/sources.list.d/obiba.list && \
-  echo opal opal-server/admin_password select password | debconf-set-selections && \
-  echo opal opal-server/admin_password_again select password | debconf-set-selections && \
+  echo 'deb https://pkg.obiba.org stable/' | tee /etc/apt/sources.list.d/obiba.list && \
   apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y opal opal-python-client
+  DEBIAN_FRONTEND=noninteractive apt-get install -y opal-python-client=$(apt-cache madison opal-python-client | cut -d ' ' -f 3 | grep ${OPAL_VERSION})
+
+# Install Opal Server
+RUN set -x && \
+  cd /usr/share/ && \
+  wget -q -O opal.zip https://download.obiba.org/opal/stable/opal-server-${OPAL_VERSION}-dist.zip && \
+  unzip -q opal.zip && \
+  rm opal.zip && \
+  mv opal-server-${OPAL_VERSION} opal
 
 # Install Jennite
 RUN \
-  curl -L -o jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip https://download.obiba.org/plugins/unstable/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip && \
+  curl -L -o jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip https://download.obiba.org/plugins/stable/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip && \
   unzip jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
   rm -f jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip
 
@@ -82,11 +91,8 @@ COPY bin /opt/opal/bin
 COPY data /opt/opal/data
 
 RUN chmod +x -R /opt/opal/bin
+RUN adduser --system --home $OPAL_HOME --no-create-home --disabled-password opal
 RUN chown -R opal /opt/opal
-
-# Remove tools to build jennite dependencies
-RUN \
-  apt-get purge -y gcc make curl liblzma-dev libbz2-dev libncurses5-dev zlib1g-dev
 
 VOLUME /srv
 
@@ -97,5 +103,3 @@ EXPOSE 8443 8080
 COPY ./docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["app"]
-
-

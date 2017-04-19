@@ -29,7 +29,36 @@ ENV OPAL_ADMINISTRATOR_PASSWORD=password
 ENV OPAL_HOME=/srv
 ENV JAVA_OPTS="-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
 
-ENV OPAL_VERSION 2.8
+ENV VCF_STORE_VERSION=1.0.0
+ENV SAMTOOLS_VERSION=1.4
+ENV OPAL_VERSION 2.9
+
+# Install and build Jennnite dependencies
+RUN apt-get update; \
+   apt-get install -y unzip gcc make curl liblzma-dev libbz2-dev libncurses5-dev zlib1g-dev; \
+   curl -L -o htslib-$SAMTOOLS_VERSION.tar.gz https://github.com/samtools/htslib/archive/$SAMTOOLS_VERSION.tar.gz ; \
+   curl -L -o samtools-$SAMTOOLS_VERSION.tar.gz https://github.com/samtools/samtools/archive/$SAMTOOLS_VERSION.tar.gz ; \
+   curl -L -o bcftools-$SAMTOOLS_VERSION.tar.gz https://github.com/samtools/bcftools/archive/$SAMTOOLS_VERSION.tar.gz ; \
+   tar xzf bcftools-$SAMTOOLS_VERSION.tar.gz ; \
+   tar xzf htslib-$SAMTOOLS_VERSION.tar.gz ; \
+   tar xzf samtools-$SAMTOOLS_VERSION.tar.gz ; \
+   rm -rf bcftools-$SAMTOOLS_VERSION.tar.gz ; \
+   rm -rf htslib-$SAMTOOLS_VERSION.tar.gz ; \
+   rm -rf samtools-$SAMTOOLS_VERSION.tar.gz ; \
+   mv htslib-$SAMTOOLS_VERSION htslib ; \
+   cd htslib; \
+   make; \
+   make install; \
+   cd ..; \
+   cd bcftools-$SAMTOOLS_VERSION ; \
+   make -j HTSDIR=../htslib ; \
+   make install ; \
+   cd .. ; \
+   cd samtools-$SAMTOOLS_VERSION ; \
+   make -j HTSDIR=../htslib ; \
+   make install ; \
+   cd ../ ; \
+   rm -rf htslib samtools-$SAMTOOLS_VERSION bcftools-$SAMTOOLS_VERSION
 
 # Install Opal Python Client
 RUN \
@@ -49,6 +78,12 @@ RUN set -x && \
   unzip -q opal.zip && \
   rm opal.zip && \
   mv opal-server-${OPAL_VERSION}-SNAPSHOT opal
+
+# Install Jennite
+RUN \
+  curl -L -o jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip https://download.obiba.org/plugins/stable/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip && \
+  unzip jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
+  rm -f jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip
 
 RUN chmod +x /usr/share/opal/bin/opal
 

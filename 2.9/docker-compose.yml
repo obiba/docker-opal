@@ -1,0 +1,35 @@
+opal:
+  image: obiba/opal:2.5
+  ports:
+  - "8843:8443"
+  - "8880:8080"
+  links:
+  - mongo
+  - mysqldata
+  - mysqlids
+  environment:
+  - MYSQLDATA_DATABASE=opal
+  - MYSQLDATA_USER=opal
+  - MYSQLDATA_PASSWORD=password
+  - MYSQLIDS_DATABASE=opal
+  - MYSQLIDS_USER=opal
+  - MYSQLIDS_PASSWORD=password
+  - OPAL_ADMINISTRATOR_PASSWORD=password
+  volumes:
+  - /tmp/opal:/srv
+mongo:
+  image: mongo
+mysqldata:
+  image: mysql
+  environment:
+  - MYSQL_DATABASE=opal
+  - MYSQL_ROOT_PASSWORD=password
+  - MYSQL_USER=opal
+  - MYSQL_PASSWORD=password
+mysqlids:
+  image: mysql
+  environment:
+  - MYSQL_DATABASE=opal
+  - MYSQL_ROOT_PASSWORD=password
+  - MYSQL_USER=opal
+  - MYSQL_PASSWORD=password
