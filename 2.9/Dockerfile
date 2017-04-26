@@ -31,7 +31,7 @@ ENV JAVA_OPTS="-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
 
 ENV VCF_STORE_VERSION=1.0.0
 ENV SAMTOOLS_VERSION=1.4
-ENV OPAL_VERSION 2.9.0
+ENV OPAL_VERSION 2.9.2
 
 # Install and build Jennnite dependencies
 RUN apt-get update; \
