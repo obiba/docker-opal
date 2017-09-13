@@ -29,7 +29,7 @@ ENV OPAL_ADMINISTRATOR_PASSWORD=password
 ENV OPAL_HOME=/srv
 ENV JAVA_OPTS="-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
 
-ENV SEARCH_ES_VERSION=2.0-SNAPSHOT
+ENV SEARCH_ES_VERSION=2.4-SNAPSHOT
 ENV VCF_STORE_VERSION=1.1-SNAPSHOT
 ENV SAMTOOLS_VERSION=1.4
 
@@ -73,13 +73,13 @@ RUN \
 
 # Install Search ES plugin
 RUN \
-  curl -L -o opal-search-es-${SEARCH_ES_VERSION}-dist.zip https://download.obiba.org/plugins/unstable/opal-search-es-${SEARCH_ES_VERSION}-dist.zip && \
+  curl -L -o opal-search-es-${SEARCH_ES_VERSION}-dist.zip https://plugins.obiba.org/unstable/opal-search-es-${SEARCH_ES_VERSION}-dist.zip && \
   unzip opal-search-es-${SEARCH_ES_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
   rm -f opal-search-es-${SEARCH_ES_VERSION}-dist.zip
 
 # Install Jennite VCF Store plugin
 RUN \
-  curl -L -o jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip https://download.obiba.org/plugins/unstable/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip && \
+  curl -L -o jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip https://plugins.obiba.org/unstable/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip && \
   unzip jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
   rm -f jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip
 
