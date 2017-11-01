@@ -33,7 +33,7 @@ RUN set -ex; \
   gpg --keyserver keyserver.pgp.com --recv-keys "$GOSU_KEY" || \
   gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GOSU_KEY"; \
   gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
-  rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc; \
+  rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc; \
   \
   chmod +x /usr/local/bin/gosu; \
 # verify that the binary works
