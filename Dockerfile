@@ -47,8 +47,8 @@ ENV OPAL_ADMINISTRATOR_PASSWORD=password
 ENV OPAL_HOME=/srv
 ENV JAVA_OPTS="-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
 
-ENV SEARCH_ES_VERSION=1.1-SNAPSHOT
-ENV VCF_STORE_VERSION=1.1-SNAPSHOT
+ENV SEARCH_ES_VERSION=1.0.0
+ENV VCF_STORE_VERSION=1.0.2
 ENV SAMTOOLS_VERSION=1.4
 
 # Install and build Jennnite dependencies
@@ -83,7 +83,7 @@ RUN \
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https && \
   apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61 && \
-  echo 'deb https://dl.bintray.com/obiba/deb all main' | sudo tee /etc/apt/sources.list.d/obiba.list && \
+  echo 'deb https://dl.bintray.com/obiba/deb all main' | tee /etc/apt/sources.list.d/obiba.list && \
   echo opal opal-server/admin_password select password | debconf-set-selections && \
   echo opal opal-server/admin_password_again select password | debconf-set-selections && \
   apt-get update && \

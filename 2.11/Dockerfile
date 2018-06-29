@@ -87,7 +87,7 @@ RUN \
 
 RUN \
   apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61 && \
-  echo 'deb https://dl.bintray.com/obiba/deb all main' | sudo tee /etc/apt/sources.list.d/obiba.list && \
+  echo 'deb https://dl.bintray.com/obiba/deb all main' | tee /etc/apt/sources.list.d/obiba.list && \
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -y opal-python-client
 
