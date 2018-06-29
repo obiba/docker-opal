@@ -1,7 +1,7 @@
 #
-# Opal Dockerfile
+# Mica Dockerfile
 #
-# https://github.com/obiba/docker-opal
+# https://github.com/obiba/docker-mica
 #
 
 # Pull base image
@@ -47,9 +47,11 @@ ENV OPAL_ADMINISTRATOR_PASSWORD=password
 ENV OPAL_HOME=/srv
 ENV JAVA_OPTS="-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
 
-ENV SEARCH_ES_VERSION=1.1-SNAPSHOT
-ENV VCF_STORE_VERSION=1.1-SNAPSHOT
+
+ENV SEARCH_ES_VERSION=1.0.0
+ENV VCF_STORE_VERSION=1.0.2
 ENV SAMTOOLS_VERSION=1.4
+ENV OPAL_VERSION=2.11.0
 
 # Install and build Jennnite dependencies
 RUN apt-get update; \
@@ -78,16 +80,24 @@ RUN apt-get update; \
    cd ../ ; \
    rm -rf htslib samtools-$SAMTOOLS_VERSION bcftools-$SAMTOOLS_VERSION
 
-# Install Opal
+# Install Opal Python Client
 RUN \
   apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https unzip
+
+RUN \
   apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61 && \
   echo 'deb https://dl.bintray.com/obiba/deb all main' | sudo tee /etc/apt/sources.list.d/obiba.list && \
-  echo opal opal-server/admin_password select password | debconf-set-selections && \
-  echo opal opal-server/admin_password_again select password | debconf-set-selections && \
   apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y opal opal-python-client
+  DEBIAN_FRONTEND=noninteractive apt-get install -y opal-python-client
+
+# Install Opal Server
+RUN set -x && \
+  cd /usr/share/ && \
+  wget -q -O opal.zip https://github.com/obiba/opal/releases/download/${OPAL_VERSION}/opal-server-${OPAL_VERSION}-dist.zip && \
+  unzip -q opal.zip && \
+  rm opal.zip && \
+  mv opal-server-${OPAL_VERSION} opal
 
 # Install Search ES plugin
 RUN \
@@ -107,11 +117,8 @@ COPY bin /opt/opal/bin
 COPY data /opt/opal/data
 
 RUN chmod +x -R /opt/opal/bin
+RUN adduser --system --home $OPAL_HOME --no-create-home --disabled-password opal
 RUN chown -R opal /opt/opal
-
-# Remove tools to build jennite dependencies
-RUN \
-  apt-get purge -y gcc make curl liblzma-dev libbz2-dev libncurses5-dev zlib1g-dev
 
 VOLUME /srv
 

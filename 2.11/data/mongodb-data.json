@@ -1,0 +1,12 @@
+{
+    "usedForIdentifiers": false,
+    "name": "mongodb",
+    "usage": "STORAGE",
+    "defaultStorage": true,
+    "mongoDbSettings": {
+        "url": "mongodb://@mongo_host@:@mongo_port@/opal_data",
+        "username": "",
+        "password": "",
+        "properties": ""
+    }
+}
