@@ -82,12 +82,12 @@ RUN apt-get update; \
 RUN \
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https && \
-  apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61 && \
-  echo 'deb https://dl.bintray.com/obiba/deb all main' | tee /etc/apt/sources.list.d/obiba.list && \
+  echo 'deb https://obiba.jfrog.io/obiba/debian-local all main' | tee /etc/apt/sources.list.d/obiba.list && \
   echo opal opal-server/admin_password select password | debconf-set-selections && \
   echo opal opal-server/admin_password_again select password | debconf-set-selections && \
-  apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y opal opal-python-client
+  apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --allow-unauthenticated opal opal-python-client
+
+RUN chmod +x /usr/share/opal/bin/opal
 
 # Install Search ES plugin
 RUN \
@@ -100,8 +100,6 @@ RUN \
   curl -L -o jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip https://github.com/obiba/jennite/releases/download/${VCF_STORE_VERSION}/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip && \
   unzip jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
   rm -f jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip
-
-RUN chmod +x /usr/share/opal/bin/opal
 
 COPY bin /opt/opal/bin
 COPY data /opt/opal/data
