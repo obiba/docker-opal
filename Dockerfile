@@ -64,7 +64,7 @@ ENV OPAL_HOME /srv
 ENV JAVA_OPTS "-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
 
 ENV SAMTOOLS_VERSION 1.4
-ENV HTSDIR /projects/htslib-$SAMTOOLS_VERSION
+ENV HTSDIR /projects/htslib
 ENV SAMDIR /projects/samtools-$SAMTOOLS_VERSION
 ENV BCFDIR /projects/bcftools-$SAMTOOLS_VERSION
 
@@ -84,11 +84,12 @@ RUN chmod +x -R /opt/opal/bin; \
 # Plugins dependencies
 WORKDIR /projects
 RUN apt-get update; \
-    apt-get install -y curl autoconf automake make gcc perl zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev; \
+    apt-get install -y curl make gcc liblzma-dev libbz2-dev libncurses5-dev zlib1g-dev; \
     curl -L https://github.com/samtools/htslib/archive/$SAMTOOLS_VERSION.tar.gz | tar xz; \
     curl -L https://github.com/samtools/samtools/archive/$SAMTOOLS_VERSION.tar.gz | tar xz; \
     curl -L https://github.com/samtools/bcftools/archive/$SAMTOOLS_VERSION.tar.gz | tar xz;
 
+RUN mv $HTSDIR-$SAMTOOLS_VERSION $HTSDIR
 WORKDIR $HTSDIR
 RUN make; \
     make install;
@@ -101,8 +102,8 @@ WORKDIR $BCFDIR
 RUN make -j HTSDIR=$HTSDIR ; \
     make install;
 
-RUN apt-get purge \
-    curl autoconf automake make gcc perl zlib1g-dev libbz2-dev liblzma-dev libcurl4-gnutls-dev libssl-dev
+RUN apt-get purge -y \
+    curl curl make gcc liblzma-dev libbz2-dev libncurses5-dev zlib1g-dev
 
 VOLUME $OPAL_HOME
 EXPOSE 8080 8443
