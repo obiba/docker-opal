@@ -44,6 +44,9 @@ ENV OPAL_BRANCH master
 
 SHELL ["/bin/bash", "-c"]
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends devscripts debhelper build-essential fakeroot git
+
 WORKDIR /projects
 RUN git clone https://github.com/obiba/opal.git
 
