@@ -1,5 +1,7 @@
 #!/bin/bash
 
+curl -X POST -k -H "Accept:application/x-protobuf+json" https://localhost:8443/ws/auth/sessions -d "username=administrator" -d "password=$OPAL_ADMINISTRATOR_PASSWORD" --cookie-jar /tmp/.cookie-jar
+
 # Configure some databases for IDs and data
 if [ -n "$MONGO_PORT_27017_TCP_ADDR" ]
 	then
@@ -8,11 +10,11 @@ if [ -n "$MONGO_PORT_27017_TCP_ADDR" ]
 		then
 		sed s/@mongo_host@/$MONGO_PORT_27017_TCP_ADDR/g /opt/opal/data/mongodb-ids.json | \
     		sed s/@mongo_port@/$MONGO_PORT_27017_TCP_PORT/g | \
-    		opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
+    		curl -X POST -k -H "Accept:application/x-protobuf+json" -H "Content-Type:application/json" https://localhost:8443/ws/system/databases --cookie /tmp/.cookie-jar -d @-
     fi
 	sed s/@mongo_host@/$MONGO_PORT_27017_TCP_ADDR/g /opt/opal/data/mongodb-data.json | \
     	sed s/@mongo_port@/$MONGO_PORT_27017_TCP_PORT/g | \
-    	opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
+    	curl -X POST -k -H "Accept:application/x-protobuf+json" -H "Content-Type:application/json" https://localhost:8443/ws/system/databases --cookie /tmp/.cookie-jar -d @-
 fi
 
 if [ -n "$MYSQLIDS_PORT_3306_TCP_ADDR" ]
@@ -36,7 +38,7 @@ if [ -n "$MYSQLIDS_PORT_3306_TCP_ADDR" ]
     	sed s/@mysql_db@/$MID_DB/g | \
     	sed s/@mysql_user@/$MID_USER/g | \
     	sed s/@mysql_pwd@/$MYSQLIDS_PASSWORD/g | \
-    	opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
+    	curl -X POST -k -H "Accept:application/x-protobuf+json" -H "Content-Type:application/json" https://localhost:8443/ws/system/databases --cookie /tmp/.cookie-jar -d @-
 fi
 
 if [ -n "$MYSQLDATA_PORT_3306_TCP_ADDR" ]
@@ -67,12 +69,12 @@ if [ -n "$MYSQLDATA_PORT_3306_TCP_ADDR" ]
     	sed s/@mysql_user@/$MD_USER/g | \
     	sed s/@mysql_pwd@/$MYSQLDATA_PASSWORD/g | \
     	sed s/@mysql_default@/$MD_DEFAULT/g | \
-    	opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
+    	curl -X POST -k -H "Accept:application/x-protobuf+json" -H "Content-Type:application/json" https://localhost:8443/ws/system/databases --cookie /tmp/.cookie-jar -d @-
 fi
 
 # Configure datashield packages
 if [ -n "$RSERVER_PORT_6312_TCP_ADDR" ]
 	then
 	echo "Initializing Datashield..."
-	opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /datashield/packages?name=datashield
+	curl -X POST -k -H "Accept:application/x-protobuf+json" -H "Content-Type:application/json" https://localhost:8443/ws/system/databases --cookie /tmp/.cookie-jar -d @-
 fi

@@ -35,7 +35,7 @@ if [ -e /opt/opal/bin/first_run.sh ]
 
 	# Wait for the opal server to be up and running
 	echo "Waiting for Opal to be ready..."
-	until opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m GET /system/databases &> /dev/null
+	until curl --silent -X POST -k -H "Accept:application/x-protobuf+json" https://localhost:8443/ws/auth/sessions -d "username=administrator" -d "password=$OPAL_ADMINISTRATOR_PASSWORD" --cookie-jar - | curl --silent -X GET -k -H "Accept:application/x-protobuf+json" https://localhost:8443/ws/system/databases --cookie - &> /dev/null
 	do
 	    sleep 5
 	done
