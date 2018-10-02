@@ -77,6 +77,7 @@ RUN apt-get update && \
 COPY --from=gosu /usr/local/bin/gosu /usr/local/bin/
 
 COPY /bin /opt/opal/bin
+COPY /data /opt/opal/data
 RUN chmod +x -R /opt/opal/bin; \
     chown -R opal /opt/opal; \
     chmod +x /usr/share/opal/bin/opal
@@ -103,7 +104,7 @@ RUN make -j HTSDIR=$HTSDIR ; \
     make install;
 
 RUN apt-get purge -y \
-    curl curl make gcc liblzma-dev libbz2-dev libncurses5-dev zlib1g-dev
+    make gcc liblzma-dev libbz2-dev libncurses5-dev zlib1g-dev
 
 VOLUME $OPAL_HOME
 EXPOSE 8080 8443
