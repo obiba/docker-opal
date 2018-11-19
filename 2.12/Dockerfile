@@ -29,10 +29,10 @@ RUN set -ex; \
   \
 # verify the signature
   export GNUPGHOME="$(mktemp -d)"; \
-  gpg --keyserver pgp.mit.edu --recv-keys "$GOSU_KEY" || \
-  gpg --keyserver keyserver.pgp.com --recv-keys "$GOSU_KEY" || \
-  gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GOSU_KEY"; \
-  gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
+  gpg --no-tty --keyserver pgp.mit.edu --recv-keys "$GOSU_KEY" || \
+  gpg --no-tty --keyserver keyserver.pgp.com --recv-keys "$GOSU_KEY" || \
+  gpg --no-tty --keyserver ha.pool.sks-keyservers.net --recv-keys "$GOSU_KEY"; \
+  gpg --no-tty --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
   rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc; \
   \
   chmod +x /usr/local/bin/gosu; \
