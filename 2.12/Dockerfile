@@ -51,6 +51,9 @@ ENV JAVA_OPTS="-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
 ENV SEARCH_ES_VERSION=1.0.0
 ENV VCF_STORE_VERSION=1.0.2
 ENV SAMTOOLS_VERSION=1.4
+ENV LIMESURVEY_PLUGIN_VERSION=1.0.0
+ENV REDCAP_PLUGIN_VERSION=1.0.3
+ENV SPSS_PLUGIN_VERSION=1.0.1
 ENV OPAL_VERSION=2.12.0
 
 # Install and build Jennnite dependencies
@@ -110,6 +113,24 @@ RUN \
   curl -L -o jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip https://github.com/obiba/jennite/releases/download/${VCF_STORE_VERSION}/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip && \
   unzip jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
   rm -f jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip
+
+# Install Limesurvey datasource plugin
+RUN \
+  curl -L -o opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-limesurvey/releases/download/${LIMESURVEY_PLUGIN_VERSION}/opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip && \
+  unzip opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
+  rm -f opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip
+
+# Install REDCap datasource plugin
+RUN \
+  curl -L -o opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-redcap/releases/download/${REDCAP_PLUGIN_VERSION}/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip && \
+  unzip opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
+  rm -f opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip
+
+# Install SPSS datasource plugin
+RUN \
+  curl -L -o opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-spss/releases/download/${SPSS_PLUGIN_VERSION}/opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip && \
+  unzip opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
+  rm -f opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip
 
 RUN chmod +x /usr/share/opal/bin/opal
 
