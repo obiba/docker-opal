@@ -1,0 +1,57 @@
+version: '3.5'
+services:
+  opal:
+    container_name: datashield_docker
+    image: opal:docker
+    networks:
+      - opal_net
+    ports:
+    - "8843:8443"
+    - "8880:8080"
+    environment:
+    - MYSQLDATA_DATABASE=opal
+    - MYSQLDATA_USER=opal
+    - MYSQLDATA_PASSWORD=password
+    - MYSQLIDS_DATABASE=opal
+    - MYSQLIDS_USER=opal
+    - MYSQLIDS_PASSWORD=password
+    - OPAL_ADMINISTRATOR_PASSWORD=password
+    - RSERVER_PORT_6312_TCP_ADDR=datashield_rserver
+    - MONGODBHOST=datashield_mongo
+    - INITTESTDATA=true
+    volumes:
+    - /tmp/opal:/srv
+  rserver:
+      container_name: datashield_rserver
+      image: obiba/opal-rserver:latest
+      ports:
+      - "6612:6312"
+      - "6611:6311"
+      networks:
+      - opal_net
+  mongo:
+    container_name: datashield_mongo
+    image: mongo
+    networks:
+      - opal_net
+  mysqldata:
+    image: mysql
+    networks:
+      - opal_net
+    environment:
+    - MYSQL_DATABASE=opal
+    - MYSQL_ROOT_PASSWORD=password
+    - MYSQL_USER=opal
+    - MYSQL_PASSWORD=password
+  mysqlids:
+    networks:
+      - opal_net
+    image: mysql
+    environment:
+    - MYSQL_DATABASE=opal
+    - MYSQL_ROOT_PASSWORD=password
+    - MYSQL_USER=opal
+    - MYSQL_PASSWORD=password
+networks:
+  opal_net:
+    name: datashield_docker_opal_net_test
