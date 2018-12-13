@@ -3,7 +3,7 @@ set -e
 
 if [ "$1" = 'app' ]; then
     chown -R opal "$OPAL_HOME"
-    exec cdct/opal/bin/start.sh
+    exec gosu opal /opt/opal/bin/start.sh
 fi
 
 exec "$@"
