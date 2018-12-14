@@ -1,0 +1,134 @@
+<variables>
+  <variable name="LAB_TSC" valueType="decimal" entityType="Participant" unit="" mimeType="" referencedEntityType="" index="0">
+    <attributes>
+      <attribute name="label" valueType="text" locale="en">Total Serum Cholesterol</attribute>
+    </attributes>
+  </variable>
+  <variable name="LAB_TRIG" valueType="decimal" entityType="Participant" unit="" mimeType="" referencedEntityType="" index="0">
+    <attributes>
+      <attribute name="label" valueType="text" locale="en">Triglycerides</attribute>
+    </attributes>
+  </variable>
+  <variable name="LAB_HDL" valueType="decimal" entityType="Participant" unit="" mimeType="" referencedEntityType="" index="0">
+    <attributes>
+      <attribute name="label" valueType="text" locale="en">HDL Cholesterol</attribute>
+    </attributes>
+  </variable>
+  <variable name="LAB_GLUC_ADJUSTED" valueType="decimal" entityType="Participant" unit="" mimeType="" referencedEntityType="" index="0">
+    <attributes>
+      <attribute name="label" valueType="text" locale="en">Non-Fasting Glucose</attribute>
+    </attributes>
+  </variable>
+  <variable name="PM_BMI_CONTINUOUS" valueType="decimal" entityType="Participant" unit="" mimeType="" referencedEntityType="" index="0">
+    <attributes>
+      <attribute name="label" valueType="text" locale="en">Body Mass Index (continuous)</attribute>
+    </attributes>
+  </variable>
+  <variable name="DIS_CVA" valueType="integer" entityType="Participant" unit="" mimeType="" referencedEntityType="" index="0">
+    <attributes>
+      <attribute name="label" valueType="text" locale="en">History of Stroke</attribute>
+    </attributes>
+    <categories>
+      <category name="0">
+        <attributes>
+          <attribute name="label" valueType="text" locale="en">Never had stroke</attribute>
+        </attributes>
+      </category>
+      <category name="1">
+        <attributes>
+          <attribute name="label" valueType="text" locale="en">Has had stroke</attribute>
+        </attributes>
+      </category>
+    </categories>
+  </variable>
+  <variable name="MEDI_LPD" valueType="integer" entityType="Participant" unit="" mimeType="" referencedEntityType="" index="0">
+    <attributes>
+      <attribute name="label" valueType="text" locale="en">Current Use of Lipid Lowering Medication (from categorical assessment item)</attribute>
+    </attributes>
+    <categories>
+      <category name="0">
+        <attributes>
+          <attribute name="label" valueType="text" locale="en">Not currently using lipid lowering medication</attribute>
+        </attributes>
+      </category>
+      <category name="1">
+        <attributes>
+          <attribute name="label" valueType="text" locale="en">Currently using lipid lowering medication</attribute>
+        </attributes>
+      </category>
+    </categories>
+  </variable>
+  <variable name="DIS_DIAB" valueType="integer" entityType="Participant" unit="" mimeType="" referencedEntityType="" index="0">
+    <attributes>
+      <attribute name="label" valueType="text" locale="en">History of Diabetes</attribute>
+    </attributes>
+    <categories>
+      <category name="0">
+        <attributes>
+          <attribute name="label" valueType="text" locale="en">Never had diabetes</attribute>
+        </attributes>
+      </category>
+      <category name="1">
+        <attributes>
+          <attribute name="label" valueType="text" locale="en">Has had diabetes</attribute>
+        </attributes>
+      </category>
+    </categories>
+  </variable>
+  <variable name="DIS_AMI" valueType="integer" entityType="Participant" unit="" mimeType="" referencedEntityType="" index="0">
+    <attributes>
+      <attribute name="label" valueType="text" locale="en">History of Myocardial Infarction</attribute>
+    </attributes>
+    <categories>
+      <category name="0">
+        <attributes>
+          <attribute name="label" valueType="text" locale="en">Never had myocardial infarction</attribute>
+        </attributes>
+      </category>
+      <category name="1">
+        <attributes>
+          <attribute name="label" valueType="text" locale="en">Has had myocardial infarction</attribute>
+        </attributes>
+      </category>
+    </categories>
+  </variable>
+  <variable name="GENDER" valueType="integer" entityType="Participant" unit="" mimeType="" referencedEntityType="" index="0">
+    <attributes>
+      <attribute name="label" valueType="text" locale="en">Gender</attribute>
+    </attributes>
+    <categories>
+      <category name="0">
+        <attributes>
+          <attribute name="label" valueType="text" locale="en">Female</attribute>
+        </attributes>
+      </category>
+      <category name="1">
+        <attributes>
+          <attribute name="label" valueType="text" locale="en">Male</attribute>
+        </attributes>
+      </category>
+    </categories>
+  </variable>
+  <variable name="PM_BMI_CATEGORICAL" valueType="integer" entityType="Participant" unit="" mimeType="" referencedEntityType="" index="0">
+    <attributes>
+      <attribute name="label" valueType="text" locale="en">Body Mass Index (categorical)</attribute>
+    </attributes>
+    <categories>
+      <category name="1">
+        <attributes>
+          <attribute name="label" valueType="text" locale="en">Less than 25 kg/m2</attribute>
+        </attributes>
+      </category>
+      <category name="2">
+        <attributes>
+          <attribute name="label" valueType="text" locale="en">25 to 30 kg/m2</attribute>
+        </attributes>
+      </category>
+      <category name="3">
+        <attributes>
+          <attribute name="label" valueType="text" locale="en">Over 30 kg/m2</attribute>
+        </attributes>
+      </category>
+    </categories>
+  </variable>
+</variables>

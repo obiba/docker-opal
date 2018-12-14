@@ -34,7 +34,21 @@ if [ -e /opt/opal/bin/first_run.sh ]
 	/usr/share/opal/bin/opal &
 
 	# Wait for the opal server to be up and running
-	echo "Waiting for Opal to be ready..."
+	echo "startup opal and install spss import pluging..."
+	until opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m GET /system/databases &> /dev/null
+	do
+	    sleep 5
+	done
+
+    # install spss plugin
+    echo '' | opal rest --opal https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD --content-type 'application/json' -m POST '/plugins?name=opal-datasource-spss&version=1.0.1'
+
+
+    echo "Restarting Opal and waiting for it to be ready..."
+    kill `pgrep -f bin/opal`
+    kill `pgrep -f opal/lib`
+    /usr/share/opal/bin/opal &
+
 	until opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m GET /system/databases &> /dev/null
 	do
 	    sleep 5

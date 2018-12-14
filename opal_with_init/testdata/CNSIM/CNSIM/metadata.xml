@@ -1,0 +1,4 @@
+<linked-list>
+  <attribute name="magma.datasource.fs.version" valueType="text">1</attribute>
+  <attribute name="magma.datasource.fs.encrypted" valueType="boolean">false</attribute>
+</linked-list>

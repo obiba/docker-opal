@@ -1,0 +1,35 @@
+<valueSet valueTable="CNSIM1" entityType="Participant" entityIdentifier="1363">
+  <variableValue variable="LAB_TSC">
+    <value valueType="decimal">4.832</value>
+  </variableValue>
+  <variableValue variable="LAB_TRIG">
+    <value valueType="decimal">1.385</value>
+  </variableValue>
+  <variableValue variable="LAB_HDL">
+    <value valueType="decimal">1.185</value>
+  </variableValue>
+  <variableValue variable="LAB_GLUC_ADJUSTED">
+    <value valueType="decimal">3.792</value>
+  </variableValue>
+  <variableValue variable="PM_BMI_CONTINUOUS">
+    <value valueType="decimal">26.74</value>
+  </variableValue>
+  <variableValue variable="DIS_CVA">
+    <value valueType="integer">0</value>
+  </variableValue>
+  <variableValue variable="MEDI_LPD">
+    <value valueType="integer">0</value>
+  </variableValue>
+  <variableValue variable="DIS_DIAB">
+    <value valueType="integer">0</value>
+  </variableValue>
+  <variableValue variable="DIS_AMI">
+    <value valueType="integer">0</value>
+  </variableValue>
+  <variableValue variable="GENDER">
+    <value valueType="integer">1</value>
+  </variableValue>
+  <variableValue variable="PM_BMI_CATEGORICAL">
+    <value valueType="integer">2</value>
+  </variableValue>
+</valueSet>
