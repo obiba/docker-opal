@@ -1,5 +1,5 @@
 opal:
-  image: obiba/opal:2.5
+  image: obiba/opal:2.12
   ports:
   - "8843:8443"
   - "8880:8080"
