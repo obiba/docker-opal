@@ -1,7 +1,7 @@
 #
-# Mica Dockerfile
+# Opal Dockerfile
 #
-# https://github.com/obiba/docker-mica
+# https://github.com/obiba/docker-opal
 #
 
 # Pull base image
