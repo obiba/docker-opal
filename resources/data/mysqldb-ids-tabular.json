@@ -1,0 +1,23 @@
+{
+    "usedForIdentifiers": true,
+    "name": "_identifiers",
+    "usage": "STORAGE",
+    "defaultStorage": false,
+    "sqlSettings": {
+        "url": "jdbc:mysql://@mysql_host@:@mysql_port@/@mysql_db@",
+        "driverClass": "com.mysql.jdbc.Driver",
+        "username": "@mysql_user@",
+        "password": "@mysql_pwd@",
+        "properties": "",
+        "sqlSchema": "JDBC",
+        "jdbcDatasourceSettings": {
+            "defaultEntityType": "Participant",
+            "defaultEntityIdColumnName": "opal_id",
+            "defaultCreatedTimestampColumnName": "opal_created",
+            "defaultUpdatedTimestampColumnName": "opal_updated",
+            "useMetadataTables": true,
+            "multipleDatasources": true,
+            "batchSize": 100
+        }
+    }
+}

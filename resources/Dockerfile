@@ -1,0 +1,155 @@
+#
+# Opal Dockerfile
+#
+# https://github.com/obiba/docker-opal
+#
+
+FROM obiba/docker-gosu:latest AS gosu
+
+FROM maven:3.5.4-slim AS building
+
+ENV OPAL_BRANCH resources
+ENV OPAL_RESOURCE_PLUGIN_BRANCH master
+ENV SEARCH_ES_VERSION=1.0.0
+ENV VCF_STORE_VERSION=1.0.2
+ENV SAMTOOLS_VERSION=1.4
+ENV LIMESURVEY_PLUGIN_VERSION=1.1.0
+ENV REDCAP_PLUGIN_VERSION=1.1.0
+ENV SPSS_PLUGIN_VERSION=1.1.0
+ENV READR_PLUGIN_VERSION=1.1.0
+ENV READXL_PLUGIN_VERSION=1.1.0
+ENV GOOGLESHEETS_PLUGIN_VERSION=1.0.0
+ENV VALIDATE_PLUGIN_VERSION=1.0.1
+
+SHELL ["/bin/bash", "-c"]
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends devscripts debhelper build-essential fakeroot git
+
+WORKDIR /projects
+RUN git clone https://github.com/obiba/opal.git
+RUN git clone https://github.com/obiba/opal-resource-commons.git
+
+WORKDIR /projects/opal
+
+RUN git checkout $OPAL_BRANCH; \
+    mvn clean install && \
+    mvn -Prelease org.apache.maven.plugins:maven-antrun-plugin:run@make-deb
+
+WORKDIR /projects/opal-resource-commons
+
+RUN git checkout $OPAL_RESOURCE_PLUGIN_BRANCH; \
+    mvn clean package
+
+FROM openjdk:8-jdk-stretch AS server
+
+ENV OPAL_ADMINISTRATOR_PASSWORD password
+ENV OPAL_HOME /srv
+ENV JAVA_OPTS "-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
+
+ENV SAMTOOLS_VERSION 1.4
+ENV HTSDIR /projects/htslib
+ENV SAMDIR /projects/samtools-$SAMTOOLS_VERSION
+ENV BCFDIR /projects/bcftools-$SAMTOOLS_VERSION
+
+WORKDIR /tmp
+COPY --from=building /projects/opal/opal-server/target/opal_*.deb .
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends daemon psmisc && \
+    DEBIAN_FRONTEND=noninteractive dpkg -i opal_*.deb
+
+COPY --from=gosu /usr/local/bin/gosu /usr/local/bin/
+
+COPY /bin /opt/opal/bin
+COPY /data /opt/opal/data
+RUN chmod +x -R /opt/opal/bin; \
+    chown -R opal /opt/opal; \
+    chmod +x /usr/share/opal/bin/opal
+
+# Plugins dependencies
+WORKDIR /projects
+RUN apt-get update; \
+    apt-get install -y curl make gcc liblzma-dev libbz2-dev libncurses5-dev zlib1g-dev; \
+    curl -L https://github.com/samtools/htslib/archive/$SAMTOOLS_VERSION.tar.gz | tar xz; \
+    curl -L https://github.com/samtools/samtools/archive/$SAMTOOLS_VERSION.tar.gz | tar xz; \
+    curl -L https://github.com/samtools/bcftools/archive/$SAMTOOLS_VERSION.tar.gz | tar xz;
+
+RUN mv $HTSDIR-$SAMTOOLS_VERSION $HTSDIR
+WORKDIR $HTSDIR
+RUN make; \
+    make install;
+
+WORKDIR $SAMDIR
+RUN make -j HTSDIR=$HTSDIR ; \
+    make install;
+
+WORKDIR $BCFDIR
+RUN make -j HTSDIR=$HTSDIR ; \
+    make install;
+
+RUN apt-get purge -y \
+    make gcc liblzma-dev libbz2-dev libncurses5-dev zlib1g-dev
+
+# Install Resource commons plugin
+COPY --from=building /projects/opal-resource-commons/target/opal-resource-commons-*-dist.zip $OPAL_HOME/plugins/
+
+# Install Search ES plugin
+RUN \
+  curl -L -o opal-search-es-${SEARCH_ES_VERSION}-dist.zip https://github.com/obiba/opal-search-es/releases/download/${SEARCH_ES_VERSION}/opal-search-es-${SEARCH_ES_VERSION}-dist.zip && \
+  unzip opal-search-es-${SEARCH_ES_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
+  rm -f opal-search-es-${SEARCH_ES_VERSION}-dist.zip
+
+# Install Jennite
+RUN \
+  curl -L -o jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip https://github.com/obiba/jennite/releases/download/${VCF_STORE_VERSION}/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip && \
+  unzip jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
+  rm -f jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip
+
+# Install Limesurvey datasource plugin
+RUN \
+  curl -L -o opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-limesurvey/releases/download/${LIMESURVEY_PLUGIN_VERSION}/opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip && \
+  unzip opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
+  rm -f opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip
+
+# Install REDCap datasource plugin
+RUN \
+  curl -L -o opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-redcap/releases/download/${REDCAP_PLUGIN_VERSION}/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip && \
+  unzip opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
+  rm -f opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip
+
+# Install SPSS datasource plugin
+RUN \
+  curl -L -o opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-spss/releases/download/${SPSS_PLUGIN_VERSION}/opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip && \
+  unzip opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
+  rm -f opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip
+
+# Install ReadR datasource plugin
+RUN \
+  curl -L -o opal-datasource-readr-${READR_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-readr/releases/download/${READR_PLUGIN_VERSION}/opal-datasource-readr-${READR_PLUGIN_VERSION}-dist.zip && \
+  unzip opal-datasource-readr-${READR_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
+  rm -f opal-datasource-readr-${READR_PLUGIN_VERSION}-dist.zip
+
+# Install ReadXL datasource plugin
+RUN \
+  curl -L -o opal-datasource-readxl-${READXL_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-readxl/releases/download/${READXL_PLUGIN_VERSION}/opal-datasource-readxl-${READXL_PLUGIN_VERSION}-dist.zip && \
+  unzip opal-datasource-readxl-${READXL_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
+  rm -f opal-datasource-readxl-${READXL_PLUGIN_VERSION}-dist.zip
+
+# Install GoogleSheets datasource plugin
+RUN \
+  curl -L -o opal-datasource-googlesheets4-${GOOGLESHEETS_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-googlesheets4/releases/download/${GOOGLESHEETS_PLUGIN_VERSION}/opal-datasource-googlesheets4-${GOOGLESHEETS_PLUGIN_VERSION}-dist.zip && \
+  unzip opal-datasource-googlesheets4-${GOOGLESHEETS_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
+  rm -f opal-datasource-googlesheets4-${GOOGLESHEETS_PLUGIN_VERSION}-dist.zip
+
+# Install Validate analysis plugin
+RUN \
+  curl -L -o opal-analysis-validate-${VALIDATE_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-analysis-validate/releases/download/${VALIDATE_PLUGIN_VERSION}/opal-analysis-validate-${VALIDATE_PLUGIN_VERSION}-dist.zip && \
+  unzip opal-analysis-validate-${VALIDATE_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
+  rm -f opal-analysis-validate-${VALIDATE_PLUGIN_VERSION}-dist.zip
+
+VOLUME $OPAL_HOME
+EXPOSE 8080 8443
+
+COPY ./docker-entrypoint.sh /
+ENTRYPOINT ["/bin/bash" ,"/docker-entrypoint.sh"]
+CMD ["app"]
