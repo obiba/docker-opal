@@ -35,6 +35,7 @@ FROM openjdk:8-jdk-stretch AS server
 
 ENV OPAL_ADMINISTRATOR_PASSWORD password
 ENV OPAL_HOME /srv
+ENV OPAL_DIST /usr/share/opal
 ENV JAVA_OPTS "-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
 
 ENV SEARCH_ES_VERSION=1.0.0
@@ -60,11 +61,14 @@ RUN apt-get update && \
 
 COPY --from=gosu /usr/local/bin/gosu /usr/local/bin/
 
-COPY /bin /opt/opal/bin
-COPY /data /opt/opal/data
-RUN chmod +x -R /opt/opal/bin; \
-    chown -R opal /opt/opal; \
-    chmod +x /usr/share/opal/bin/opal
+# Install Opal Python Client
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https unzip
+
+RUN \
+    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61 && \
+    echo 'deb https://dl.bintray.com/obiba/deb all main' | tee /etc/apt/sources.list.d/obiba.list && \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y opal-python-client
 
 # Plugins dependencies
 WORKDIR /projects
@@ -90,62 +94,54 @@ RUN make -j HTSDIR=$HTSDIR ; \
 RUN apt-get purge -y \
     make gcc liblzma-dev libbz2-dev libncurses5-dev zlib1g-dev
 
+WORKDIR $OPAL_DIST
+
 # Install Resource commons plugin
-COPY --from=building /projects/opal-resource-commons/target/opal-resource-commons-*-dist.zip $OPAL_HOME/plugins/
+COPY --from=building /projects/opal-resource-commons/target/opal-resource-commons-*-dist.zip $OPAL_DIST/plugins/
 
 # Install Search ES plugin
 RUN \
-  curl -L -o opal-search-es-${SEARCH_ES_VERSION}-dist.zip https://github.com/obiba/opal-search-es/releases/download/${SEARCH_ES_VERSION}/opal-search-es-${SEARCH_ES_VERSION}-dist.zip && \
-  unzip opal-search-es-${SEARCH_ES_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
-  rm -f opal-search-es-${SEARCH_ES_VERSION}-dist.zip
+  curl -L -o $OPAL_DIST/plugins/opal-search-es-${SEARCH_ES_VERSION}-dist.zip https://github.com/obiba/opal-search-es/releases/download/${SEARCH_ES_VERSION}/opal-search-es-${SEARCH_ES_VERSION}-dist.zip
 
 # Install Jennite
 RUN \
-  curl -L -o jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip https://github.com/obiba/jennite/releases/download/${VCF_STORE_VERSION}/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip && \
-  unzip jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
-  rm -f jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip
+  curl -L -o $OPAL_DIST/plugins/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip https://github.com/obiba/jennite/releases/download/${VCF_STORE_VERSION}/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip
 
 # Install Limesurvey datasource plugin
 RUN \
-  curl -L -o opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-limesurvey/releases/download/${LIMESURVEY_PLUGIN_VERSION}/opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip && \
-  unzip opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
-  rm -f opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip
+  curl -L -o $OPAL_DIST/plugins/opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-limesurvey/releases/download/${LIMESURVEY_PLUGIN_VERSION}/opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip
 
 # Install REDCap datasource plugin
 RUN \
-  curl -L -o opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-redcap/releases/download/${REDCAP_PLUGIN_VERSION}/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip && \
-  unzip opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
-  rm -f opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip
+  curl -L -o $OPAL_DIST/plugins/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-redcap/releases/download/${REDCAP_PLUGIN_VERSION}/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip 
 
 # Install SPSS datasource plugin
 RUN \
-  curl -L -o opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-spss/releases/download/${SPSS_PLUGIN_VERSION}/opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip && \
-  unzip opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
-  rm -f opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip
+  curl -L -o $OPAL_DIST/plugins/opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-spss/releases/download/${SPSS_PLUGIN_VERSION}/opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip
 
 # Install ReadR datasource plugin
 RUN \
-  curl -L -o opal-datasource-readr-${READR_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-readr/releases/download/${READR_PLUGIN_VERSION}/opal-datasource-readr-${READR_PLUGIN_VERSION}-dist.zip && \
-  unzip opal-datasource-readr-${READR_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
-  rm -f opal-datasource-readr-${READR_PLUGIN_VERSION}-dist.zip
+  curl -L -o $OPAL_DIST/plugins/opal-datasource-readr-${READR_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-readr/releases/download/${READR_PLUGIN_VERSION}/opal-datasource-readr-${READR_PLUGIN_VERSION}-dist.zip
 
 # Install ReadXL datasource plugin
 RUN \
-  curl -L -o opal-datasource-readxl-${READXL_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-readxl/releases/download/${READXL_PLUGIN_VERSION}/opal-datasource-readxl-${READXL_PLUGIN_VERSION}-dist.zip && \
-  unzip opal-datasource-readxl-${READXL_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
-  rm -f opal-datasource-readxl-${READXL_PLUGIN_VERSION}-dist.zip
+  curl -L -o $OPAL_DIST/plugins/opal-datasource-readxl-${READXL_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-readxl/releases/download/${READXL_PLUGIN_VERSION}/opal-datasource-readxl-${READXL_PLUGIN_VERSION}-dist.zip
 
 # Install GoogleSheets datasource plugin
 RUN \
-  curl -L -o opal-datasource-googlesheets4-${GOOGLESHEETS_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-googlesheets4/releases/download/${GOOGLESHEETS_PLUGIN_VERSION}/opal-datasource-googlesheets4-${GOOGLESHEETS_PLUGIN_VERSION}-dist.zip && \
-  unzip opal-datasource-googlesheets4-${GOOGLESHEETS_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
-  rm -f opal-datasource-googlesheets4-${GOOGLESHEETS_PLUGIN_VERSION}-dist.zip
+  curl -L -o $OPAL_DIST/plugins/opal-datasource-googlesheets4-${GOOGLESHEETS_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-googlesheets4/releases/download/${GOOGLESHEETS_PLUGIN_VERSION}/opal-datasource-googlesheets4-${GOOGLESHEETS_PLUGIN_VERSION}-dist.zip
 
 # Install Validate analysis plugin
 RUN \
-  curl -L -o opal-analysis-validate-${VALIDATE_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-analysis-validate/releases/download/${VALIDATE_PLUGIN_VERSION}/opal-analysis-validate-${VALIDATE_PLUGIN_VERSION}-dist.zip && \
-  unzip opal-analysis-validate-${VALIDATE_PLUGIN_VERSION}-dist.zip -d $OPAL_HOME/plugins/ && \
-  rm -f opal-analysis-validate-${VALIDATE_PLUGIN_VERSION}-dist.zip
+  curl -L -o $OPAL_DIST/plugins/opal-analysis-validate-${VALIDATE_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-analysis-validate/releases/download/${VALIDATE_PLUGIN_VERSION}/opal-analysis-validate-${VALIDATE_PLUGIN_VERSION}-dist.zip
+
+COPY /bin /opt/opal/bin
+COPY /data /opt/opal/data
+RUN chmod +x -R /opt/opal/bin; \
+    chown -R opal /opt/opal; \
+    chmod +x $OPAL_DIST/bin/opal
+
+WORKDIR $OPAL_HOME
 
 VOLUME $OPAL_HOME
 EXPOSE 8080 8443
