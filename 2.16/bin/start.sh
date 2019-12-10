@@ -25,9 +25,9 @@ fi
 # Install default plugins
 if [ ! -d $OPAL_HOME/plugins ]
 then
-        echo "Preparing default plugins in $OPAL_HOME ..."
-        mkdir -p $OPAL_HOME/plugins
-        cp -r /usr/share/opal/plugins/* $OPAL_HOME/plugins
+    echo "Preparing default plugins in $OPAL_HOME ..."
+    mkdir -p $OPAL_HOME/plugins
+    cp $OPAL_DIST/plugins/* $OPAL_HOME/plugins
 fi
 
 #
