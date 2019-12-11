@@ -56,6 +56,10 @@ then
 	echo "Setting R server connection..."
 	sed s/#org.obiba.opal.Rserve.host=/org.obiba.opal.Rserve.host=$RSERVER_HOST/g $OPAL_HOME/conf/opal-config.properties > /tmp/opal-config.properties
 	mv -f /tmp/opal-config.properties $OPAL_HOME/conf/opal-config.properties
+  if [ -n "$R_REPOS" ]
+  then
+    echo "org.obiba.opal.r.repos=$R_REPOS" >> $OPAL_HOME/conf/opal-config.properties
+  fi
 fi
 
 #
