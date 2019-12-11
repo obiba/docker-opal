@@ -19,8 +19,8 @@ ENV SEARCH_ES_VERSION=1.0.0
 ENV VCF_STORE_VERSION=1.0.2
 ENV SAMTOOLS_VERSION=1.4
 ENV LIMESURVEY_PLUGIN_VERSION=1.1.0
-ENV REDCAP_PLUGIN_VERSION=1.1.0
-ENV SPSS_PLUGIN_VERSION=1.1.0
+ENV REDCAP_PLUGIN_VERSION=1.1.1
+ENV SPSS_PLUGIN_VERSION=1.1.1
 ENV READR_PLUGIN_VERSION=1.1.0
 ENV READXL_PLUGIN_VERSION=1.1.0
 ENV GOOGLESHEETS_PLUGIN_VERSION=1.0.0
@@ -32,7 +32,7 @@ ENV BCFDIR /projects/bcftools-$SAMTOOLS_VERSION
 
 WORKDIR /tmp
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends daemon psmisc    
+    apt-get install -y --no-install-recommends daemon psmisc
 
 COPY --from=gosu /usr/local/bin/gosu /usr/local/bin/
 

@@ -42,8 +42,8 @@ ENV SEARCH_ES_VERSION=1.0.0
 ENV VCF_STORE_VERSION=1.0.2
 ENV SAMTOOLS_VERSION=1.4
 ENV LIMESURVEY_PLUGIN_VERSION=1.1.0
-ENV REDCAP_PLUGIN_VERSION=1.1.0
-ENV SPSS_PLUGIN_VERSION=1.1.0
+ENV REDCAP_PLUGIN_VERSION=1.1.1
+ENV SPSS_PLUGIN_VERSION=1.1.1
 ENV READR_PLUGIN_VERSION=1.1.0
 ENV READXL_PLUGIN_VERSION=1.1.0
 ENV GOOGLESHEETS_PLUGIN_VERSION=1.0.0
@@ -113,7 +113,7 @@ RUN \
 
 # Install REDCap datasource plugin
 RUN \
-  curl -L -o $OPAL_DIST/plugins/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-redcap/releases/download/${REDCAP_PLUGIN_VERSION}/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip 
+  curl -L -o $OPAL_DIST/plugins/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-redcap/releases/download/${REDCAP_PLUGIN_VERSION}/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip
 
 # Install SPSS datasource plugin
 RUN \
