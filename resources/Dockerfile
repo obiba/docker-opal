@@ -8,7 +8,7 @@ FROM obiba/docker-gosu:latest AS gosu
 
 FROM maven:3.5.4-slim AS building
 
-ENV OPAL_BRANCH resources
+ENV OPAL_BRANCH master
 ENV OPAL_RESOURCE_PLUGIN_BRANCH master
 
 SHELL ["/bin/bash", "-c"]
