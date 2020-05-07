@@ -9,7 +9,6 @@ FROM obiba/docker-gosu:latest AS gosu
 FROM maven:3.5.4-slim AS building
 
 ENV OPAL_BRANCH master
-ENV OPAL_RESOURCE_PLUGIN_BRANCH master
 
 SHELL ["/bin/bash", "-c"]
 
@@ -18,18 +17,12 @@ RUN apt-get update && \
 
 WORKDIR /projects
 RUN git clone https://github.com/obiba/opal.git
-RUN git clone https://github.com/obiba/opal-resource-commons.git
 
 WORKDIR /projects/opal
 
 RUN git checkout $OPAL_BRANCH; \
     mvn clean install && \
     mvn -Prelease org.apache.maven.plugins:maven-antrun-plugin:run@make-deb
-
-WORKDIR /projects/opal-resource-commons
-
-RUN git checkout $OPAL_RESOURCE_PLUGIN_BRANCH; \
-    mvn clean package
 
 FROM openjdk:8-jdk-stretch AS server
 
@@ -95,9 +88,6 @@ RUN apt-get purge -y \
     make gcc liblzma-dev libbz2-dev libncurses5-dev zlib1g-dev
 
 WORKDIR $OPAL_DIST
-
-# Install Resource commons plugin
-COPY --from=building /projects/opal-resource-commons/target/opal-resource-commons-*-dist.zip $OPAL_DIST/plugins/
 
 # Install Search ES plugin
 # Install Jennite
