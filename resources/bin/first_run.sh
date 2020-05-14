@@ -114,7 +114,7 @@ fi
 if [ -n "$RSERVER_HOST" ]
 	then
 	echo "Initializing Datashield..."
-	opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /datashield/packages?name=datashield
-	opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST "/datashield/packages?name=obiba%2Fresourcer&ref=master"
+	opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST "/datashield/packages?name=datashield%2FdsBase&ref=v6.0-dev"
+	opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST "/datashield/packages?name=obiba%2Fresourcer&ref=1.0.x"
 fi
 
