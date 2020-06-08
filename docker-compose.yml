@@ -1,8 +1,7 @@
 version: '3'
 services:
   opal:
-    # build: .
-    image: obiba/opal:snapshot
+    image: obiba/opal:2.16
     ports:
       - "8843:8443"
       - "8880:8080"
@@ -31,6 +30,6 @@ services:
       - MYSQL_USER=opal
       - MYSQL_PASSWORD=password
   rserver:
-    image: obiba/opal-rserver:latest
+    image: obiba/opal-rserver
     volumes:
       - /tmp/rserver:/srv
