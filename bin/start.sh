@@ -47,6 +47,13 @@ then
 	mv -f /tmp/opal-config.properties $OPAL_HOME/conf/opal-config.properties
 fi
 
+if [ -z "$AGATE_HOST" -a -e /opt/opal/bin/first_run.sh ]
+then
+  echo "Disabling default Agate setting as AGATE_HOST is not defined..."
+  sed s@#org.obiba.realm.url=https://localhost:8444@org.obiba.realm.url=@g $OPAL_HOME/conf/opal-config.properties > /tmp/opal-config.properties
+  mv -f /tmp/opal-config.properties $OPAL_HOME/conf/opal-config.properties
+fi
+
 #
 # R server
 #
