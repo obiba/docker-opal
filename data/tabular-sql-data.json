@@ -1,13 +1,13 @@
 {
     "usedForIdentifiers": false,
-    "name": "mysqldb",
+    "name": "@name@",
     "usage": "STORAGE",
-    "defaultStorage": @mysql_default@,
+    "defaultStorage": @default_storage@,
     "sqlSettings": {
-        "url": "jdbc:mysql://@mysql_host@:@mysql_port@/@mysql_db@",
-        "driverClass": "com.mysql.jdbc.Driver",
-        "username": "@mysql_user@",
-        "password": "@mysql_pwd@",
+        "url": "jdbc:@driver@://@host@:@port@/@db@",
+        "driverClass": "@driver_class@",
+        "username": "@user@",
+        "password": "@pwd@",
         "properties": "",
         "sqlSchema": "JDBC",
         "jdbcDatasourceSettings": {
