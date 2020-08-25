@@ -38,16 +38,43 @@ then
 	then
 		MONGO_PORT=27017
 	fi
+	MG_USER = ""
+	if [ -n "$MONGO_USER" ]
+	then
+		MG_USER=$MONGO_USER
+	fi
+	MG_PWD = ""
+	if [ -n "$MONGO_PASSWORD" ]
+	then
+		MG_PWD=$MONGO_PASSWORD
+	fi
+	MGID_DB = "opal_ids"
+	if [ -n "$MONGOIDS_DATABASE" ]
+	then
+		MGID_DB=$MONGOIDS_DATABASE
+	fi
+	MGD_DB = "opal_data"
+	if [ -n "$MONGODATA_DATABASE" ]
+	then
+		MGD_DB=$MONGODATA_DATABASE
+	fi
+
 	if [ -z "$MYSQLIDS_HOST" ]
 		then
 		echo "Initializing Opal IDs database with MongoDB..."
 		sed s/@mongo_host@/$MONGO_HOST/g /opt/opal/data/mongodb-ids.json | \
     		sed s/@mongo_port@/$MONGO_PORT/g | \
+    		sed s/@mongo_db@/$MGID_DB/g | \
+    		sed s/@mongo_user@/$MG_USER/g | \
+    		sed s/@mongo_pwd@/$MG_PWD/g | \
     		opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
 	fi
 	echo "Initializing Opal data database with MongoDB..."
 	sed s/@mongo_host@/$MONGO_HOST/g /opt/opal/data/mongodb-data.json | \
     	sed s/@mongo_port@/$MONGO_PORT/g | \
+    	sed s/@mongo_db@/$MGD_DB/g | \
+    	sed s/@mongo_user@/$MG_USER/g | \
+    	sed s/@mongo_pwd@/$MG_PWD/g | \
     	opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
 fi
 
@@ -116,4 +143,3 @@ if [ -n "$RSERVER_HOST" ]
 	echo "Initializing Datashield..."
 	opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /datashield/packages?name=datashield
 fi
-
