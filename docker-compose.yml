@@ -50,7 +50,6 @@ services:
         postgresdata:
                 image: postgres
                 environment:
-                environment:
                         - MYSQL_DATABASE=opal
                         - MYSQL_ROOT_PASSWORD=password
                         - MYSQL_USER=opal
