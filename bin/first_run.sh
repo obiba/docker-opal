@@ -44,13 +44,13 @@ then
 	then
 		MONGO_PORT=27017
 	fi
-	MG_USER = ""
+	MG_USER=""
 	if [ -n "$MONGO_USER" ] ; then MG_USER=$MONGO_USER ; fi
-	MG_PWD = ""
+	MG_PWD=""
 	if [ -n "$MONGO_PASSWORD" ] ; then MG_PWD=$MONGO_PASSWORD ; fi
-	MGID_DB = "opal_ids"
+	MGID_DB="opal_ids"
 	if [ -n "$MONGOIDS_DATABASE" ] ; then MGID_DB=$MONGOIDS_DATABASE ; fi
-	MGD_DB = "opal_data"
+	MGD_DB="opal_data"
 	if [ -n "$MONGODATA_DATABASE" ] ; then MGD_DB=$MONGODATA_DATABASE ; fi
 
 	if [ -z "$MYSQLIDS_HOST" ] && [ -z "$MARIADBIDS_HOST" ] && [ -z "$POSTGRESIDS_HOST" ]
@@ -129,7 +129,7 @@ if [ -n "$MARIADBDATA_HOST" ]
 	then
 	echo "Initializing Opal data database with MariaDB..."
 
-	DB_PORT = "3306"
+	DB_PORT="3306"
 	DB_DB="opal"
 	if [ -n "$MARIADBDATA_DATABASE" ] ; then DB_DB=$MARIADBDATA_DATABASE ; fi
 	DB_USER="root"
@@ -163,7 +163,7 @@ if [ -n "$POSTGRESDATA_HOST" ]
 	then
 	echo "Initializing Opal data database with PostgreSQL..."
 
-	DB_PORT = "5432"
+	DB_PORT="5432"
 	DB_DB="opal"
 	if [ -n "$POSTGRESDATA_DATABASE" ] ; then DB_DB=$POSTGRESDATA_DATABASE ; fi
 	DB_USER="root"
