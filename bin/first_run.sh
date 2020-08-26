@@ -135,7 +135,7 @@ if [ -n "$MARIADBDATA_HOST" ]
 	DB_USER="root"
 	if [ -n "$MARIADBDATA_USER" ] ;	then DB_USER=$MARIADBDATA_USER ; fi
 	DB_DEFAULT="false"
-	if [ -z "$MONGO_HOST" ] ; then DB_DEFAULT="true" ; fi
+	if [ -z "$MONGO_HOST" ] && [ -z "$MYSQLDATA_HOST" ] ; then DB_DEFAULT="true" ; fi
 
 	makeJSONDataDB "mariadb" "mariadb" "org.mariadb.jdbc.Driver" $MARIADBDATA_HOST $DB_PORT $DB_DB $DB_USER $MARIADBDATA_PASSWORD $DB_DEFAULT | \
 		opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
@@ -169,7 +169,7 @@ if [ -n "$POSTGRESDATA_HOST" ]
 	DB_USER="root"
 	if [ -n "$POSTGRESDATA_USER" ] ; then DB_USER=$POSTGRESDATA_USER ; fi
 	DB_DEFAULT="false"
-	if [ -z "$MONGO_HOST" ] ; then DB_DEFAULT="true" ; fi
+	if [ -z "$MONGO_HOST" ] && [ -z "$MYSQLDATA_HOST" ] && [ -z "$MARIADBDATA_HOST" ] ; then DB_DEFAULT="true" ; fi
 
 	makeJSONDataDB "postgresdb" "postgresql" "org.postgresql.Driver" $POSTGRESDATA_HOST $DB_PORT $DB_DB $DB_USER $POSTGRESDATA_PASSWORD $DB_DEFAULT | \
 		opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
