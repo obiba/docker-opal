@@ -4,9 +4,9 @@
     "usage": "STORAGE",
     "defaultStorage": true,
     "mongoDbSettings": {
-        "url": "mongodb://@mongo_host@:@mongo_port@/opal_data",
-        "username": "",
-        "password": "",
+        "url": "mongodb://@host@:@port@/@db@",
+        "username": "@user@",
+        "password": "@pwd@",
         "properties": ""
     }
 }
