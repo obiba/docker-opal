@@ -155,7 +155,7 @@ if [ -n "$POSTGRESIDS_HOST" ] && [ -z "$MARIADBIDS_HOST" ] && [ -z "$MYSQLIDS_HO
 	DB_USER="root"
 	if [ -n "$POSTGRESIDS_USER" ] ; then DB_USER=$POSTGRESIDS_USER ; fi
 
-	makeJSONIDsDB "postgres" "org.postgresql.Driver" $POSTGRESIDS_HOST $DB_PORT $DB_DB $DB_USER $POSTGRESIDS_PASSWORD | \
+	makeJSONIDsDB "postgresql" "org.postgresql.Driver" $POSTGRESIDS_HOST $DB_PORT $DB_DB $DB_USER $POSTGRESIDS_PASSWORD | \
 		opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
 fi
 
@@ -171,7 +171,7 @@ if [ -n "$POSTGRESDATA_HOST" ]
 	DB_DEFAULT="false"
 	if [ -z "$MONGO_HOST" ] ; then DB_DEFAULT="true" ; fi
 
-	makeJSONDataDB "postgresdb" "postgres" "org.postgresql.Driver" $POSTGRESDATA_HOST $DB_PORT $DB_DB $DB_USER $POSTGRESDATA_PASSWORD $DB_DEFAULT | \
+	makeJSONDataDB "postgresdb" "postgresql" "org.postgresql.Driver" $POSTGRESDATA_HOST $DB_PORT $DB_DB $DB_USER $POSTGRESDATA_PASSWORD $DB_DEFAULT | \
 		opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
 fi
 
