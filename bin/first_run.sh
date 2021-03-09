@@ -176,7 +176,7 @@ if [ -n "$POSTGRESDATA_HOST" ]
 fi
 
 # Configure datashield packages
-if [ -n "$RSERVER_HOST" ]
+if [ -n "$ROCK_HOST" ] || [ -n "$RSERVER_HOST" ]
 	then
 	echo "Initializing Datashield..."
 	opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /datashield/packages?name=datashield
