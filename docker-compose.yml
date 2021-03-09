@@ -10,7 +10,7 @@ services:
                         - mysqldata
                         - mariadbdata
                         - postgresdata
-                        - rserver
+                        - rock
                 environment:
                         - OPAL_ADMINISTRATOR_PASSWORD=password
                         - MONGO_HOST=mongo
@@ -27,7 +27,7 @@ services:
                         - POSTGRESDATA_HOST=postgresdata
                         - POSTGRESDATA_USER=opal
                         - POSTGRESDATA_PASSWORD=password
-                        - RSERVER_HOST=rserver
+                        - ROCK_HOST=rock
                 volumes:
                         - /tmp/test-opal:/srv
         mongo:
@@ -52,7 +52,7 @@ services:
                         - POSTGRES_DB=opal
                         - POSTGRES_USER=opal
                         - POSTGRES_PASSWORD=password
-        rserver:
-                image: obiba/opal-rserver:latest
+        rock:
+                image: obiba/rock:latest
                 volumes:
-                        - /tmp/rserver:/srv
+                        - /tmp/rock:/srv
