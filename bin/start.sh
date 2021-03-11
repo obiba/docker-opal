@@ -49,10 +49,10 @@ then
   # Rock R server
   #
 
-  if [ -n "$ROCK_HOST" ]
+  if [ -n "$ROCK_HOSTS" ]
   then
     echo "Setting Rock R server connection..."
-    echo "apps.discovery.rock.hosts = $ROCK_HOST" >> $OPAL_HOME/conf/opal-config.properties
+    echo "apps.discovery.rock.hosts = $ROCK_HOSTS" >> $OPAL_HOME/conf/opal-config.properties
   fi
 
   #

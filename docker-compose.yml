@@ -28,7 +28,7 @@ services:
                         - POSTGRESDATA_HOST=postgresdata
                         - POSTGRESDATA_USER=opal
                         - POSTGRESDATA_PASSWORD=password
-                        - ROCK_HOST=rock
+                        - ROCK_HOSTS=rock:8085
                 volumes:
                         - /tmp/test-opal:/srv
         mongo:
