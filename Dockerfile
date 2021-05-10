@@ -42,8 +42,8 @@ RUN \
   DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https unzip curl
 
 RUN \
-  curl -fsSL https://www.obiba.org/assets/obiba-pub.pem | sudo apt-key add - && \
-  echo 'deb https://obiba.jfrog.io/artifactory/debian-local all main' | sudo tee /etc/apt/sources.list.d/obiba.list && \
+  curl -fsSL https://www.obiba.org/assets/obiba-pub.pem | apt-key add - && \
+  echo 'deb https://obiba.jfrog.io/artifactory/debian-local all main' | tee /etc/apt/sources.list.d/obiba.list && \
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get install -y opal-python-client
 
