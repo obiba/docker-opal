@@ -37,13 +37,15 @@ RUN apt-get update && \
 COPY --from=gosu /usr/local/bin/gosu /usr/local/bin/
 
 # Install Opal Python Client
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https unzip
+RUN \
+  apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https unzip curl
 
 RUN \
-    apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 379CE192D401AB61 && \
-    echo 'deb https://dl.bintray.com/obiba/deb all main' | tee /etc/apt/sources.list.d/obiba.list && \
-    apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y opal-python-client
+  curl -fsSL https://www.obiba.org/assets/obiba-pub.pem | sudo apt-key add - && \
+  echo 'deb https://obiba.jfrog.io/artifactory/debian-local all main' | sudo tee /etc/apt/sources.list.d/obiba.list && \
+  apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get install -y opal-python-client
 
 # Install Opal Server
 RUN set -x && \
