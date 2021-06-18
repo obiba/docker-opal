@@ -25,26 +25,18 @@ services:
                 environment:
                         - ROCK_ID=default-1
                         - ROCK_CLUSTER=default
-                        - ROCK_ADMINISTRATOR_NAME=administrator
-                        - ROCK_ADMINISTRATOR_PASSWORD=password
         rock2:
                 image: datashield/rock-base:latest
                 environment:
                         - ROCK_ID=default-2
                         - ROCK_CLUSTER=default
-                        - ROCK_ADMINISTRATOR_NAME=administrator
-                        - ROCK_ADMINISTRATOR_PASSWORD=password
         rock3:
                 image: datashield/rock-base:snapshot
                 environment:
                         - ROCK_ID=dev-1
                         - ROCK_CLUSTER=dev
-                        - ROCK_ADMINISTRATOR_NAME=administrator
-                        - ROCK_ADMINISTRATOR_PASSWORD=password
         rock4:
                 image: obiba/rock-demo:snapshot
                 environment:
                         - ROCK_ID=demo-1
                         - ROCK_CLUSTER=demo
-                        - ROCK_ADMINISTRATOR_NAME=administrator
-                        - ROCK_ADMINISTRATOR_PASSWORD=password
