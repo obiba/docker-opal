@@ -11,6 +11,10 @@ then
   echo "Preparing default conf in $OPAL_HOME ..."
   mkdir -p $OPAL_HOME/conf
   cp -r /usr/share/opal/conf/* $OPAL_HOME/conf
+  if [ -f /opt/opal/bin/first_run.sh.done ]
+  then
+    mv /opt/opal/bin/first_run.sh.done /opt/opal/bin/first_run.sh
+  fi
 fi
 
 # Install default plugins
@@ -53,6 +57,27 @@ then
   then
     echo "Setting Rock R server connection..."
     echo "apps.discovery.rock.hosts = $ROCK_HOSTS" >> $OPAL_HOME/conf/opal-config.properties
+  fi
+
+  if [ -n "$ROCK_ADMINISTRATOR_USER" ] && [ -n "$ROCK_ADMINISTRATOR_PASSWORD" ]
+  then
+    echo "Setting Rock R server administrator credentials..."
+    echo "rock.default.administrator.username = $ROCK_ADMINISTRATOR_USER" >> $OPAL_HOME/conf/opal-config.properties
+    echo "rock.default.administrator.password = $ROCK_ADMINISTRATOR_PASSWORD" >> $OPAL_HOME/conf/opal-config.properties
+  fi
+
+  if [ -n "$ROCK_MANAGER_USER" ] && [ -n "$ROCK_MANAGER_PASSWORD" ]
+  then
+    echo "Setting Rock R server manager credentials..."
+    echo "rock.default.manager.username = $ROCK_MANAGER_USER" >> $OPAL_HOME/conf/opal-config.properties
+    echo "rock.default.manager.password = $ROCK_ADMINROCK_MANAGER_PASSWORDISTRATOR_PASSWORD" >> $OPAL_HOME/conf/opal-config.properties
+  fi
+
+  if [ -n "$ROCK_USER_USER" ] && [ -n "$ROCK_USER_PASSWORD" ]
+  then
+    echo "Setting Rock R server user credentials..."
+    echo "rock.default.user.username = $ROCK_USER_USER" >> $OPAL_HOME/conf/opal-config.properties
+    echo "rock.default.user.password = $ROCK_USER_PASSWORD" >> $OPAL_HOME/conf/opal-config.properties
   fi
 
   #

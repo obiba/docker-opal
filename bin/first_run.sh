@@ -178,6 +178,6 @@ fi
 # Configure datashield packages
 if [ -n "$ROCK_HOSTS" ] || [ -n "$RSERVER_HOST" ]
 	then
-	echo "Initializing Datashield..."
-	opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /datashield/packages?name=datashield
+	echo "Initializing Datashield on default profile..."
+	opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m PUT /datashield/packages/_publish
 fi
