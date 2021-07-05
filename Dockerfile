@@ -52,6 +52,11 @@ RUN cd /usr/share/ && \
   rm /tmp/opal-server-*-dist.zip && \
   mv opal-server-* opal
 
+RUN adduser --system --home $OPAL_HOME --no-create-home --disabled-password opal; \
+    chmod +x -R /opt/opal/bin; \
+    chown -R opal /opt/opal; \
+    chmod +x $OPAL_DIST/bin/opal
+
 COPY --from=gosu /usr/local/bin/gosu /usr/local/bin/
 
 # Install Opal Python Client
