@@ -1,5 +1,22 @@
 #!/bin/bash
 
+# utils
+set_property () {
+  field=$1
+  value=$2
+  file=$3
+  tmpfile=/tmp/`basename ${file}`
+  if grep -q ${field} ${file}
+  then
+    sed -r "s#${field}\s*=.*#${field}=${value}#g" ${file} | \
+      sed -r "s/^#${field}=/${field}=/g" > ${tmpfile}
+  else
+    cat ${file} > ${tmpfile}
+    echo "${field} = ${value}" >> ${tmpfile}
+  fi
+  mv ${tmpfile} ${file}
+}
+
 # Legacy parameters
 if [ -n "$AGATE_PORT_8444_TCP_ADDR" ] ; then AGATE_HOST=$AGATE_PORT_8444_TCP_ADDR ; fi
 if [ -n "$AGATE_PORT_8444_TCP_PORT" ] ; then AGATE_PORT=$AGATE_PORT_8444_TCP_PORT ; fi
@@ -36,13 +53,10 @@ then
     then
       AGATE_PORT=8444
     fi
-    sed s/localhost:8444/$AGATE_HOST:$AGATE_PORT/g $OPAL_HOME/conf/opal-config.properties | \
-      sed s/#org.obiba.realm.url/org.obiba.realm.url/g > /tmp/opal-config.properties
-    mv -f /tmp/opal-config.properties $OPAL_HOME/conf/opal-config.properties
+    set_property "org.obiba.realm.url" "$AGATE_HOST:$AGATE_PORT" "$OPAL_HOME/conf/opal-config.properties"
   else
     echo "Disabling default Agate setting as AGATE_HOST is not defined..."
-    sed s@#org.obiba.realm.url=https://localhost:8444@org.obiba.realm.url=@g $OPAL_HOME/conf/opal-config.properties > /tmp/opal-config.properties
-    mv -f /tmp/opal-config.properties $OPAL_HOME/conf/opal-config.properties
+    set_property "org.obiba.realm.url" "" "$OPAL_HOME/conf/opal-config.properties"
   fi
 
   #
@@ -52,15 +66,37 @@ then
   if [ -n "$ROCK_HOSTS" ]
   then
     echo "Setting Rock R server connection..."
-    echo "apps.discovery.rock.hosts = $ROCK_HOSTS" >> $OPAL_HOME/conf/opal-config.properties
+    set_property "apps.discovery.rock.hosts" "$ROCK_HOSTS" "$OPAL_HOME/conf/opal-config.properties"
+  fi
+
+  if [ -n "$ROCK_ADMINISTRATOR_USER" ] && [ -n "$ROCK_ADMINISTRATOR_PASSWORD" ]
+  then
+    echo "Setting Rock R server administrator credentials..."
+    set_property "rock.default.administrator.username" "$ROCK_ADMINISTRATOR_USER" "$OPAL_HOME/conf/opal-config.properties"
+    set_property "rock.default.administrator.password" "$ROCK_ADMINISTRATOR_PASSWORD" "$OPAL_HOME/conf/opal-config.properties"
+  fi
+
+  if [ -n "$ROCK_MANAGER_USER" ] && [ -n "$ROCK_MANAGER_PASSWORD" ]
+  then
+    echo "Setting Rock R server manager credentials..."
+    set_property "rock.default.manager.username" "$ROCK_MANAGER_USER" "$OPAL_HOME/conf/opal-config.properties"
+    set_property "rock.default.manager.password" "$ROCK_MANAGER_PASSWORD" "$OPAL_HOME/conf/opal-config.properties"
+  fi
+
+  if [ -n "$ROCK_USER_USER" ] && [ -n "$ROCK_USER_PASSWORD" ]
+  then
+    echo "Setting Rock R server user credentials..."
+    set_property "rock.default.user.username" "$ROCK_USER_USER" "$OPAL_HOME/conf/opal-config.properties"
+    set_property "rock.default.user.password" "$ROCK_USER_PASSWORD" "$OPAL_HOME/conf/opal-config.properties"
   fi
 
   #
   # R repositories
   #
+
   if [ -n "$R_REPOS" ]
   then
-    echo "org.obiba.opal.r.repos=$R_REPOS" >> $OPAL_HOME/conf/opal-config.properties
+    set_property "org.obiba.opal.r.repos" "$R_REPOS" "$OPAL_HOME/conf/opal-config.properties"
   fi
 
   #
@@ -70,8 +106,7 @@ then
   if [ -n "$RSERVER_HOST" ]
   then
     echo "Setting R server connection..."
-    sed s/#org.obiba.opal.Rserve.host=/org.obiba.opal.Rserve.host=$RSERVER_HOST/g $OPAL_HOME/conf/opal-config.properties > /tmp/opal-config.properties
-    mv -f /tmp/opal-config.properties $OPAL_HOME/conf/opal-config.properties
+    set_property "org.obiba.opal.Rserve.host" "$RSERVER_HOST" "$OPAL_HOME/conf/opal-config.properties"
   fi
 
 fi
