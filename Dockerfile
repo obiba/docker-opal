@@ -21,8 +21,7 @@ RUN git clone https://github.com/obiba/opal.git
 WORKDIR /projects/opal
 
 RUN git checkout $OPAL_BRANCH; \
-    mvn clean install && \
-    mvn -Prelease org.apache.maven.plugins:maven-antrun-plugin:run@make-deb
+    mvn clean install
 
 FROM openjdk:8-jdk-stretch AS server
 
@@ -47,10 +46,11 @@ ENV SAMDIR /projects/samtools-$SAMTOOLS_VERSION
 ENV BCFDIR /projects/bcftools-$SAMTOOLS_VERSION
 
 WORKDIR /tmp
-COPY --from=building /projects/opal/opal-server/target/opal_*.deb .
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends daemon psmisc && \
-    DEBIAN_FRONTEND=noninteractive dpkg -i opal_*.deb
+COPY --from=building /projects/opal/opal-server/target/opal-server-*-dist.zip .
+RUN cd /usr/share/ && \
+  unzip -q /tmp/opal-server-*-dist.zip && \
+  rm /tmp/opal-server-*-dist.zip && \
+  mv opal-server-* opal
 
 COPY --from=gosu /usr/local/bin/gosu /usr/local/bin/
 
