@@ -49,11 +49,16 @@ then
   if [ -n "$AGATE_HOST" ]
   then
     echo "Setting Agate connection..."
-    if [ -z "$AGATE_PORT" ]
+    AGATE_URL=$AGATE_HOST
+    if [ -n "$AGATE_PORT" ]
     then
-      AGATE_PORT=8444
+      AGATE_URL="$AGATE_HOST:$AGATE_PORT"
     fi
-    set_property "org.obiba.realm.url" "$AGATE_HOST:$AGATE_PORT" "$OPAL_HOME/conf/opal-config.properties"
+    if [[ ! "$AGATE_URL" =~ ^http ]]
+    then
+      AGATE_URL="https://$AGATE_URL"
+    fi
+    set_property "org.obiba.realm.url" "$AGATE_URL" "$OPAL_HOME/conf/opal-config.properties"
   else
     echo "Disabling default Agate setting as AGATE_HOST is not defined..."
     set_property "org.obiba.realm.url" "" "$OPAL_HOME/conf/opal-config.properties"
