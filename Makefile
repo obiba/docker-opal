@@ -28,5 +28,11 @@ logs:
 build:
 	docker-compose -f $(docker_compose_file) build --no-cache
 
+# Build Docker image
+build-image:
+	sudo docker build --no-cache=true -t="obiba/opal:snapshot" .
+
+push-image:
+	sudo docker image push obiba/opal:snapshot
 clean:
 	rm -rf target
