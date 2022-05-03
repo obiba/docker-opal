@@ -71,28 +71,28 @@ RUN \
   DEBIAN_FRONTEND=noninteractive apt-get install -y python3-distutils opal-python-client
 
 # Plugins dependencies
-WORKDIR /projects
-RUN apt-get update; \
-    apt-get install -y curl make gcc liblzma-dev libbz2-dev libncurses5-dev zlib1g-dev; \
-    curl -L https://github.com/samtools/htslib/archive/$SAMTOOLS_VERSION.tar.gz | tar xz; \
-    curl -L https://github.com/samtools/samtools/archive/$SAMTOOLS_VERSION.tar.gz | tar xz; \
-    curl -L https://github.com/samtools/bcftools/archive/$SAMTOOLS_VERSION.tar.gz | tar xz;
+#WORKDIR /projects
+#RUN apt-get update; \
+#    apt-get install -y curl make gcc liblzma-dev libbz2-dev libncurses5-dev zlib1g-dev; \
+#    curl -L https://github.com/samtools/htslib/archive/$SAMTOOLS_VERSION.tar.gz | tar xz; \
+#    curl -L https://github.com/samtools/samtools/archive/$SAMTOOLS_VERSION.tar.gz | tar xz; \
+#    curl -L https://github.com/samtools/bcftools/archive/$SAMTOOLS_VERSION.tar.gz | tar xz;
 
-RUN mv $HTSDIR-$SAMTOOLS_VERSION $HTSDIR
-WORKDIR $HTSDIR
-RUN make; \
-    make install;
+#RUN mv $HTSDIR-$SAMTOOLS_VERSION $HTSDIR
+#WORKDIR $HTSDIR
+#RUN make; \
+#    make install;
 
-WORKDIR $SAMDIR
-RUN make -j HTSDIR=$HTSDIR ; \
-    make install;
+#WORKDIR $SAMDIR
+#RUN make -j HTSDIR=$HTSDIR ; \
+#    make install;
 
-WORKDIR $BCFDIR
-RUN make -j HTSDIR=$HTSDIR ; \
-    make install;
+#WORKDIR $BCFDIR
+#RUN make -j HTSDIR=$HTSDIR ; \
+#    make install;
 
-RUN apt-get purge -y \
-    make gcc liblzma-dev libbz2-dev libncurses5-dev zlib1g-dev
+#RUN apt-get purge -y \
+#    make gcc liblzma-dev libbz2-dev libncurses5-dev zlib1g-dev
 
 # Install Search ES plugin
 # Install Jennite
@@ -106,7 +106,7 @@ RUN apt-get purge -y \
 RUN \
   mkdir $OPAL_DIST/plugins; \
   curl -L -o $OPAL_DIST/plugins/opal-search-es-${SEARCH_ES_VERSION}-dist.zip https://github.com/obiba/opal-search-es/releases/download/${SEARCH_ES_VERSION}/opal-search-es-${SEARCH_ES_VERSION}-dist.zip; \
-  curl -L -o $OPAL_DIST/plugins/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip https://github.com/obiba/jennite/releases/download/${VCF_STORE_VERSION}/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip; \
+#  curl -L -o $OPAL_DIST/plugins/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip https://github.com/obiba/jennite/releases/download/${VCF_STORE_VERSION}/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip; \
   curl -L -o $OPAL_DIST/plugins/opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-limesurvey/releases/download/${LIMESURVEY_PLUGIN_VERSION}/opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip; \
   curl -L -o $OPAL_DIST/plugins/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-redcap/releases/download/${REDCAP_PLUGIN_VERSION}/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip; \
   curl -L -o $OPAL_DIST/plugins/opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-spss/releases/download/${SPSS_PLUGIN_VERSION}/opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip; \
