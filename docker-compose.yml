@@ -7,6 +7,9 @@ services:
                         - "8870:8080"
                 links:
                         - mongo
+                        - mysqldata
+                        - mariadbdata
+                        - postgresdata
                         - rock1
                         - rock2
                 environment:
@@ -15,6 +18,18 @@ services:
                         - MONGO_PORT=27017
                         - MONGO_USER=root
                         - MONGO_PASSWORD=example
+                        - MYSQLDATA_DATABASE=opal
+                        - MYSQLDATA_HOST=mysqldata
+                        - MYSQLDATA_USER=opal
+                        - MYSQLDATA_PASSWORD=password
+                        - MARIADBDATA_DATABASE=opal
+                        - MARIADBDATA_HOST=mariadbdata
+                        - MARIADBDATA_USER=opal
+                        - MARIADBDATA_PASSWORD=password
+                        - POSTGRESDATA_DATABASE=opal
+                        - POSTGRESDATA_HOST=postgresdata
+                        - POSTGRESDATA_USER=opal
+                        - POSTGRESDATA_PASSWORD=password
                         - ROCK_HOSTS=rock1:8085,rock2:8085
                 volumes:
                         - ./target/opal:/srv
@@ -23,6 +38,26 @@ services:
                 environment:
                         - MONGO_INITDB_ROOT_USERNAME=root
                         - MONGO_INITDB_ROOT_PASSWORD=example
+        mysqldata:
+                image: mysql:5
+                environment:
+                        - MYSQL_DATABASE=opal
+                        - MYSQL_ROOT_PASSWORD=password
+                        - MYSQL_USER=opal
+                        - MYSQL_PASSWORD=password
+        mariadbdata:
+                image: mariadb
+                environment:
+                        - MYSQL_DATABASE=opal
+                        - MYSQL_ROOT_PASSWORD=password
+                        - MYSQL_USER=opal
+                        - MYSQL_PASSWORD=password
+        postgresdata:
+                image: postgres
+                environment:
+                        - POSTGRES_DB=opal
+                        - POSTGRES_USER=opal
+                        - POSTGRES_PASSWORD=password
         rock1:
                 image: datashield/rock-base:latest
                 environment:
