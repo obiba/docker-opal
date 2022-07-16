@@ -53,6 +53,12 @@ then
 	MGD_DB="opal_data"
 	if [ -n "$MONGODATA_DATABASE" ] ; then MGD_DB=$MONGODATA_DATABASE ; fi
 
+  if [ -n "$MG_USER" ]
+    then
+    MGID_DB="$MGID_DB?authSource=admin"
+    MGD_DB="$MGD_DB?authSource=admin"
+  fi
+
 	if [ -z "$MYSQLIDS_HOST" ] && [ -z "$MARIADBIDS_HOST" ] && [ -z "$POSTGRESIDS_HOST" ]
 		then
 		echo "Initializing Opal IDs database with MongoDB..."
