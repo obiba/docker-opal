@@ -88,10 +88,12 @@ if [ -n "$MYSQLIDS_HOST" ]
 
 	DB_PORT="3306"
 	if [ -n "$MYSQLIDS_PORT" ] ; then DB_PORT=$MYSQLIDS_PORT ; fi
-	DB_DB="opal"
+	DB_DB="opal_ids"
 	if [ -n "$MYSQLIDS_DATABASE" ] ; then DB_DB=$MYSQLIDS_DATABASE ; fi
 	DB_USER="root"
 	if [ -n "$MYSQLIDS_USER" ] ; then DB_USER=$MYSQLIDS_USER ; fi
+
+	DB_DB="$DB_DB?verifyServerCertificate=false&useSSL=false"
 
 	makeJSONIDsDB "mysql" "com.mysql.jdbc.Driver" $MYSQLIDS_HOST $DB_PORT $DB_DB $DB_USER $MYSQLIDS_PASSWORD | \
 		opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
@@ -108,6 +110,8 @@ if [ -n "$MYSQLDATA_HOST" ]
 	if [ -n "$MYSQLDATA_USER" ] ; then DB_USER=$MYSQLDATA_USER ; fi
 	DB_DEFAULT="false"
 	if [ -z "$MONGO_HOST" ] ; then DB_DEFAULT="true" ; fi
+
+	DB_DB="$DB_DB?verifyServerCertificate=false&useSSL=false"
 
 	makeJSONDataDB "mysqldb" "mysql" "com.mysql.jdbc.Driver" $MYSQLDATA_HOST $DB_PORT $DB_DB $DB_USER $MYSQLDATA_PASSWORD $DB_DEFAULT | \
 		opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
