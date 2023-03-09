@@ -43,6 +43,15 @@ if [ ! -f /opt/opal/bin/first_run.sh.done ]
 then
 
   #
+  # Opal
+  #
+
+  if [ -n "$APP_URL" ]
+  then
+    set_property "org.obiba.opal.public.url" "$APP_URL" "$OPAL_HOME/conf/opal-config.properties"
+  fi
+
+  #
   # Agate
   #
 
