@@ -68,7 +68,7 @@ then
       AGATE_URL="https://$AGATE_URL"
     fi
     set_property "org.obiba.realm.url" "$AGATE_URL" "$OPAL_HOME/conf/opal-config.properties"
-  else if [ -n "$AGATE_URL" ]
+  elif [ -n "$AGATE_URL" ]
     then
     echo "Setting Agate connection..."
     set_property "org.obiba.realm.url" "$AGATE_URL" "$OPAL_HOME/conf/opal-config.properties"
