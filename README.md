@@ -9,6 +9,6 @@ docker-compose up
 
 Then connect to:
 
-[https://localhost:8843](https://localhost:8843)
+[http://localhost:8870](http://localhost:8870)
 
 See branches of this repository for released versions of Opal.
