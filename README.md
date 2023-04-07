@@ -9,5 +9,4 @@ docker-compose up
 
 Then connect to:
 
-[https://localhost:8843](https://localhost:8843)
-
+[http://localhost:8880](http://localhost:8880)

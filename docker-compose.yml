@@ -3,7 +3,6 @@ services:
         opal:
                 image: obiba/opal:latest
                 ports:
-                        - "8843:8443"
                         - "8880:8080"
                 links:
                         - mongo
@@ -33,12 +32,12 @@ services:
                 volumes:
                         - /tmp/test-opal:/srv
         mongo:
-                image: mongo
+                image: mongo:6.0
                 environment:
                         - MONGO_INITDB_ROOT_USERNAME=root
                         - MONGO_INITDB_ROOT_PASSWORD=example
         mysqldata:
-                image: mysql:5
+                image: mysql
                 environment:
                         - MYSQL_DATABASE=opal
                         - MYSQL_ROOT_PASSWORD=password
