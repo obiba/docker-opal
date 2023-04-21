@@ -51,6 +51,11 @@ then
     set_property "org.obiba.opal.public.url" "$APP_URL" "$OPAL_HOME/conf/opal-config.properties"
   fi
 
+  if [ -n "$APP_CONTEXT_PATH" ]
+  then
+    set_property "org.obiba.opal.server.context-path" "$APP_CONTEXT_PATH" "$OPAL_HOME/conf/opal-config.properties"
+  fi
+
   #
   # Agate
   #
