@@ -22,6 +22,13 @@ if [ -n "$AGATE_PORT_8444_TCP_ADDR" ] ; then AGATE_HOST=$AGATE_PORT_8444_TCP_ADD
 if [ -n "$AGATE_PORT_8444_TCP_PORT" ] ; then AGATE_PORT=$AGATE_PORT_8444_TCP_PORT ; fi
 if [ -n "$RSERVER_PORT_6312_TCP_ADDR" ] ; then RSERVER_HOST=$RSERVER_PORT_6312_TCP_ADDR ; fi
 
+# Local Opal
+export OPAL_LOCAL_URL=https://localhost:8443
+if [ -n "$APP_CONTEXT_PATH" ]
+then
+  export OPAL_LOCAL_URL+=$APP_CONTEXT_PATH
+fi
+
 # Make sure conf folder is available
 if [ ! -d $OPAL_HOME/conf ]
 then
@@ -160,7 +167,7 @@ else
   /usr/share/opal/bin/opal &
   # Wait for the opal server to be up and running
   echo "Waiting for Opal to be ready..."
-  until opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m GET /system/databases &> /dev/null
+  until opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m GET /system/databases &> /dev/null
   do
     sleep 5
   done
