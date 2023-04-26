@@ -67,7 +67,7 @@ then
         sed s/@db@/$MGID_DB/g | \
         sed s/@user@/$MG_USER/g | \
         sed s/@pwd@/$MG_PWD/g | \
-        opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
+        opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
 	fi
 	echo "Initializing Opal data database with MongoDB..."
 	sed s/@host@/$MONGO_HOST/g /opt/opal/data/mongodb-data.json | \
@@ -75,7 +75,7 @@ then
       sed s/@db@/$MGD_DB/g | \
       sed s/@user@/$MG_USER/g | \
       sed s/@pwd@/$MG_PWD/g | \
-      opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
+      opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
 fi
 
 #
@@ -96,7 +96,7 @@ if [ -n "$MYSQLIDS_HOST" ]
 	DB_DB="$DB_DB?verifyServerCertificate=false\&useSSL=false"
 
 	makeJSONIDsDB "mysql" "com.mysql.jdbc.Driver" $MYSQLIDS_HOST $DB_PORT $DB_DB $DB_USER $MYSQLIDS_PASSWORD | \
-		opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
+		opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
 fi
 
 if [ -n "$MYSQLDATA_HOST" ]
@@ -114,7 +114,7 @@ if [ -n "$MYSQLDATA_HOST" ]
 	DB_DB="$DB_DB?verifyServerCertificate=false\&useSSL=false"
 
 	makeJSONDataDB "mysqldb" "mysql" "com.mysql.jdbc.Driver" $MYSQLDATA_HOST $DB_PORT $DB_DB $DB_USER $MYSQLDATA_PASSWORD $DB_DEFAULT | \
-		opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
+		opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
 fi
 
 #
@@ -132,7 +132,7 @@ if [ -n "$MARIADBIDS_HOST" ] && [ -z "$MYSQLIDS_HOST" ]
 	if [ -n "$MARIADBIDS_USER" ] ; then DB_USER=$MARIADBIDS_USER ; fi
 
 	makeJSONIDsDB "mariadb" "org.mariadb.jdbc.Driver" $MARIADBIDS_HOST $DB_PORT $DB_DB $DB_USER $MARIADBIDS_PASSWORD | \
-		opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
+		opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
 fi
 
 if [ -n "$MARIADBDATA_HOST" ]
@@ -148,7 +148,7 @@ if [ -n "$MARIADBDATA_HOST" ]
 	if [ -z "$MONGO_HOST" ] && [ -z "$MYSQLDATA_HOST" ] ; then DB_DEFAULT="true" ; fi
 
 	makeJSONDataDB "mariadb" "mariadb" "org.mariadb.jdbc.Driver" $MARIADBDATA_HOST $DB_PORT $DB_DB $DB_USER $MARIADBDATA_PASSWORD $DB_DEFAULT | \
-		opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
+		opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
 fi
 
 #
@@ -166,7 +166,7 @@ if [ -n "$POSTGRESIDS_HOST" ] && [ -z "$MARIADBIDS_HOST" ] && [ -z "$MYSQLIDS_HO
 	if [ -n "$POSTGRESIDS_USER" ] ; then DB_USER=$POSTGRESIDS_USER ; fi
 
 	makeJSONIDsDB "postgresql" "org.postgresql.Driver" $POSTGRESIDS_HOST $DB_PORT $DB_DB $DB_USER $POSTGRESIDS_PASSWORD | \
-		opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
+		opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
 fi
 
 if [ -n "$POSTGRESDATA_HOST" ]
@@ -182,13 +182,13 @@ if [ -n "$POSTGRESDATA_HOST" ]
 	if [ -z "$MONGO_HOST" ] && [ -z "$MYSQLDATA_HOST" ] && [ -z "$MARIADBDATA_HOST" ] ; then DB_DEFAULT="true" ; fi
 
 	makeJSONDataDB "postgresdb" "postgresql" "org.postgresql.Driver" $POSTGRESDATA_HOST $DB_PORT $DB_DB $DB_USER $POSTGRESDATA_PASSWORD $DB_DEFAULT | \
-		opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
+		opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
 fi
 
 # Configure datashield packages
 if [ -n "$ROCK_HOSTS" ] || [ -n "$RSERVER_HOST" ]
 	then
 	echo "Initializing Datashield default profile..."
-	opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m PUT /datashield/packages/_publish
-	opal rest -o https://localhost:8443 -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m PUT /datashield/profile/default/_enable
+	opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m PUT /datashield/packages/_publish
+	opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m PUT /datashield/profile/default/_enable
 fi
