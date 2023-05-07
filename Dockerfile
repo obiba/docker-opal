@@ -62,6 +62,7 @@ COPY --from=gosu /usr/local/bin/gosu /usr/local/bin/
 # Install Opal Python Client
 RUN \
   apt-get update && \
+  DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
   DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https unzip curl
 
 RUN \
