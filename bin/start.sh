@@ -23,7 +23,7 @@ if [ -n "$AGATE_PORT_8444_TCP_PORT" ] ; then AGATE_PORT=$AGATE_PORT_8444_TCP_POR
 if [ -n "$RSERVER_PORT_6312_TCP_ADDR" ] ; then RSERVER_HOST=$RSERVER_PORT_6312_TCP_ADDR ; fi
 
 # Local Opal
-export OPAL_LOCAL_URL=https://localhost:8443
+export OPAL_LOCAL_URL=http://localhost:8080
 if [ -n "$APP_CONTEXT_PATH" ]
 then
   export OPAL_LOCAL_URL+=$APP_CONTEXT_PATH
