@@ -130,6 +130,15 @@ then
   fi
 
   #
+  # Cross Site Request Forgery (CSRF)
+  #
+
+  if [ -n "$CSRF_ALLOWED" ]
+  then
+    set_property "csrf.allowed" "$CSRF_ALLOWED" "$OPAL_HOME/conf/opal-config.properties"
+  fi
+
+  #
   # R server (legacy)
   #
 
