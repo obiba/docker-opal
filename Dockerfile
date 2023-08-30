@@ -7,7 +7,7 @@
 FROM obiba/docker-gosu:latest AS gosu
 
 
-FROM openjdk:8-jre-bullseye AS server
+FROM docker.io/library/eclipse-temurin:8-jre AS server
 
 ENV OPAL_ADMINISTRATOR_PASSWORD password
 ENV OPAL_HOME /srv
@@ -26,19 +26,15 @@ ENV VALIDATE_PLUGIN_VERSION=1.1.0
 
 WORKDIR /tmp
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends daemon psmisc
+    DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y daemon psmisc apt-transport-https unzip curl python3-pip libcurl4-openssl-dev libssl-dev && \
+    apt-get clean &&  \
+    rm -rf /var/lib/apt/lists/*
 
 COPY --from=gosu /usr/local/bin/gosu /usr/local/bin/
 
 # Install Opal Python Client
-RUN \
-  apt-get update && \
-  DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y apt-transport-https unzip curl
-
-RUN \
-  DEBIAN_FRONTEND=noninteractive apt-get install -y python3-pip libcurl4-openssl-dev libssl-dev && \
-  pip install obiba-opal
+RUN pip install obiba-opal
 
 # Install Opal Server
 RUN set -x && \
