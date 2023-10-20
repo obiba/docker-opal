@@ -111,8 +111,6 @@ if [ -n "$MYSQLDATA_HOST" ]
 	DB_DEFAULT="false"
 	if [ -z "$MONGO_HOST" ] ; then DB_DEFAULT="true" ; fi
 
-	DB_DB="$DB_DB?verifyServerCertificate=false\&useSSL=false"
-
 	makeJSONDataDB "mysqldb" "mysql" "com.mysql.jdbc.Driver" $MYSQLDATA_HOST $DB_PORT $DB_DB $DB_USER $MYSQLDATA_PASSWORD $DB_DEFAULT | \
 		opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
 fi
