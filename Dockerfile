@@ -4,7 +4,7 @@
 # https://github.com/obiba/docker-opal
 #
 
-FROM obiba/docker-gosu:latest AS gosu
+FROM tianon/gosu:latest AS gosu
 
 
 FROM docker.io/library/eclipse-temurin:8-jre AS server
@@ -14,7 +14,7 @@ ENV OPAL_HOME /srv
 ENV OPAL_DIST /usr/share/opal
 ENV JAVA_OPTS "-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
 
-ENV OPAL_VERSION=4.6.6
+ENV OPAL_VERSION=4.6.7
 ENV SEARCH_ES_VERSION=1.1.0
 ENV LIMESURVEY_PLUGIN_VERSION=1.3.0
 ENV REDCAP_PLUGIN_VERSION=1.2.0
