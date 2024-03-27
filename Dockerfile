@@ -4,7 +4,7 @@
 # https://github.com/obiba/docker-opal
 #
 
-FROM obiba/docker-gosu:latest AS gosu
+FROM tianon/gosu:latest AS gosu
 
 FROM maven:3.9.1-amazoncorretto-8-debian AS building
 
