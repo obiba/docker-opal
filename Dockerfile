@@ -6,7 +6,7 @@
 
 FROM tianon/gosu:latest AS gosu
 
-FROM maven:3.9.1-amazoncorretto-8-debian AS building
+FROM maven:3-amazoncorretto-21-debian AS building
 
 ENV OPAL_BRANCH master
 
@@ -23,12 +23,12 @@ WORKDIR /projects/opal
 RUN git checkout $OPAL_BRANCH; \
     mvn clean install
 
-FROM docker.io/library/eclipse-temurin:8-jre AS server
+FROM docker.io/library/eclipse-temurin:21-jre AS server
 
 ENV OPAL_ADMINISTRATOR_PASSWORD password
 ENV OPAL_HOME /srv
 ENV OPAL_DIST /usr/share/opal
-ENV JAVA_OPTS "-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
+ENV JAVA_OPTS "-Xms1G -Xmx2G -XX:+UseG1GC"
 
 ENV SEARCH_ES_VERSION=1.1.0
 ENV VCF_STORE_VERSION=1.0.2
