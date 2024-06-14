@@ -1,4 +1,3 @@
-version: '3'
 services:
         opal:
                 image: obiba/opal:snapshot
@@ -12,6 +11,7 @@ services:
                         - postgresdata
                         - rock1
                         - rock2
+                        - rock-mediation
                 environment:
                         - OPAL_ADMINISTRATOR_PASSWORD=password
                         - MONGO_HOST=mongo
@@ -30,7 +30,7 @@ services:
                         - POSTGRESDATA_HOST=postgresdata
                         - POSTGRESDATA_USER=opal
                         - POSTGRESDATA_PASSWORD=password
-                        - ROCK_HOSTS=rock1:8085,rock2:8085
+                        - ROCK_HOSTS=rock1:8085,rock2:8085i,rock-mediation:8085
                 volumes:
                         - ./target/opal:/srv
         mongo:
@@ -68,3 +68,8 @@ services:
                 environment:
                         - ROCK_ID=default-2
                         - ROCK_CLUSTER=default
+        rock-mediation:
+                image: datashield/rock-mediation:latest
+                environment:
+                        - ROCK_ID=mediation-1
+                        - ROCK_CLUSTER=mediation
