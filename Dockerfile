@@ -6,16 +6,14 @@
 
 FROM tianon/gosu:latest AS gosu
 
-
-FROM docker.io/library/eclipse-temurin:8-jre-jammy AS server
+FROM docker.io/library/eclipse-temurin:21-jre-jammy AS server-released
 
 ENV OPAL_ADMINISTRATOR_PASSWORD password
 ENV OPAL_HOME /srv
 ENV OPAL_DIST /usr/share/opal
 ENV JAVA_OPTS "-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
 
-ENV OPAL_VERSION=4.7.4
-ENV SEARCH_ES_VERSION=1.1.0
+ENV OPAL_VERSION=5.0.0-RC1
 ENV LIMESURVEY_PLUGIN_VERSION=1.3.0
 ENV REDCAP_PLUGIN_VERSION=1.2.0
 ENV SPSS_PLUGIN_VERSION=1.2.0
@@ -47,7 +45,6 @@ RUN set -x && \
 # Plugins dependencies
 WORKDIR /projects
 
-# Install Search ES plugin
 # Install Limesurvey datasource plugin
 # Install REDCap datasource plugin
 # Install SPSS datasource plugin
@@ -57,7 +54,6 @@ WORKDIR /projects
 # Install Validate analysis plugin
 RUN \
   mkdir $OPAL_DIST/plugins && \
-  curl -L -o $OPAL_DIST/plugins/opal-search-es-${SEARCH_ES_VERSION}-dist.zip https://github.com/obiba/opal-search-es/releases/download/${SEARCH_ES_VERSION}/opal-search-es-${SEARCH_ES_VERSION}-dist.zip && \
   curl -L -o $OPAL_DIST/plugins/opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-limesurvey/releases/download/${LIMESURVEY_PLUGIN_VERSION}/opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip && \
   curl -L -o $OPAL_DIST/plugins/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-redcap/releases/download/${REDCAP_PLUGIN_VERSION}/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip && \
   curl -L -o $OPAL_DIST/plugins/opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-spss/releases/download/${SPSS_PLUGIN_VERSION}/opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip && \
