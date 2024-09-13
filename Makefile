@@ -30,9 +30,9 @@ build:
 
 # Build Docker image
 build-image:
-	sudo docker build --no-cache=true -t="obiba/opal:snapshot" .
+	docker build --no-cache=true -t="obiba/opal:snapshot" .
 
 push-image:
-	sudo docker image push obiba/opal:snapshot
+	docker image push obiba/opal:snapshot
 clean:
 	rm -rf target
