@@ -11,7 +11,7 @@ FROM docker.io/library/eclipse-temurin:21-jre-jammy AS server-released
 ENV OPAL_ADMINISTRATOR_PASSWORD password
 ENV OPAL_HOME /srv
 ENV OPAL_DIST /usr/share/opal
-ENV JAVA_OPTS "-Xms1G -Xmx2G -XX:MaxPermSize=256M -XX:+UseG1GC"
+ENV JAVA_OPTS "-Xms1G -Xmx2G -XX:+UseG1GC"
 
 ENV OPAL_VERSION=5.0.0-RC1
 ENV LIMESURVEY_PLUGIN_VERSION=1.3.0
