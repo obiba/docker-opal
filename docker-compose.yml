@@ -30,7 +30,7 @@ services:
                         - POSTGRESDATA_HOST=postgresdata
                         - POSTGRESDATA_USER=opal
                         - POSTGRESDATA_PASSWORD=password
-                        - ROCK_HOSTS=rock1:8085,rock2:8085i,rock-mediation:8085
+                        - ROCK_HOSTS=rock1:8085,rock2:8085,rock-mediation:8085
                 volumes:
                         - ./target/opal:/srv
         mongo:
