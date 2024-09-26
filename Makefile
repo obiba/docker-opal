@@ -5,15 +5,15 @@
 no_cache=false
 
 all:
-	sudo docker build --no-cache=true -t="obiba/opal:$(tag)" . && \
-		sudo docker build -t="obiba/opal:latest" . && \
-		sudo docker image push obiba/opal:$(tag) && \
-		sudo docker image push obiba/opal:latest
+	docker build --no-cache=true -t="obiba/opal:$(tag)" . && \
+		docker build -t="obiba/opal:latest" . && \
+		docker image push obiba/opal:$(tag) && \
+		docker image push obiba/opal:latest
 
 # Build Docker image
 build:
-	sudo docker build --pull --no-cache=$(no_cache) --progress=plain -t="obiba/opal:$(tag)" .
+	docker build --pull --no-cache=$(no_cache) --progress=plain -t="obiba/opal:$(tag)" .
 
 push:
-	sudo docker image push obiba/opal:$(tag)
+	docker image push obiba/opal:$(tag)
 
