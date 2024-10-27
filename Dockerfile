@@ -6,7 +6,7 @@
 
 FROM tianon/gosu:latest AS gosu
 
-FROM maven:3-amazoncorretto-21-debian AS building
+FROM maven:3.9-eclipse-temurin-21-jammy AS building
 
 ENV OPAL_BRANCH master
 
