@@ -30,7 +30,7 @@ build:
 
 # Build Docker image
 build-image:
-	docker build --no-cache=true -t="obiba/opal:snapshot" .
+	docker build --no-cache=true --progress=plain -t="obiba/opal:snapshot" .
 
 push-image:
 	docker image push obiba/opal:snapshot

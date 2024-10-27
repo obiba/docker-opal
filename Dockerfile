@@ -30,16 +30,14 @@ ENV OPAL_HOME /srv
 ENV OPAL_DIST /usr/share/opal
 ENV JAVA_OPTS "-Xms1G -Xmx2G -XX:+UseG1GC"
 
-ENV SEARCH_ES_VERSION=1.1.0
-ENV VCF_STORE_VERSION=1.0.2
-ENV SAMTOOLS_VERSION=1.4
-ENV LIMESURVEY_PLUGIN_VERSION=1.3.0
-ENV REDCAP_PLUGIN_VERSION=1.2.0
-ENV SPSS_PLUGIN_VERSION=1.2.0
-ENV READR_PLUGIN_VERSION=1.2.0
-ENV READXL_PLUGIN_VERSION=1.2.0
-ENV GOOGLESHEETS_PLUGIN_VERSION=1.1.0
-ENV VALIDATE_PLUGIN_VERSION=1.1.0
+ENV LIMESURVEY_PLUGIN_VERSION=2.0.0
+ENV REDCAP_PLUGIN_VERSION=2.0.0
+ENV SPSS_PLUGIN_VERSION=2.0.0
+ENV READR_PLUGIN_VERSION=2.0.0
+ENV READXL_PLUGIN_VERSION=2.0.0
+ENV GOOGLESHEETS_PLUGIN_VERSION=2.0.0
+ENV VALIDATE_PLUGIN_VERSION=2.0.0
+ENV VCF_STORE_VERSION=2.0.0
 ENV SAMTOOLS_VERSION 1.4
 ENV HTSDIR /projects/htslib
 ENV SAMDIR /projects/samtools-$SAMTOOLS_VERSION
@@ -105,7 +103,6 @@ RUN pip install obiba-opal
 # Install Validate analysis plugin
 RUN \
   mkdir $OPAL_DIST/plugins; \
-  curl -L -o $OPAL_DIST/plugins/opal-search-es-${SEARCH_ES_VERSION}-dist.zip https://github.com/obiba/opal-search-es/releases/download/${SEARCH_ES_VERSION}/opal-search-es-${SEARCH_ES_VERSION}-dist.zip; \
 #  curl -L -o $OPAL_DIST/plugins/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip https://github.com/obiba/jennite/releases/download/${VCF_STORE_VERSION}/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip; \
   curl -L -o $OPAL_DIST/plugins/opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-limesurvey/releases/download/${LIMESURVEY_PLUGIN_VERSION}/opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip; \
   curl -L -o $OPAL_DIST/plugins/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-redcap/releases/download/${REDCAP_PLUGIN_VERSION}/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip; \
