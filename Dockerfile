@@ -47,7 +47,7 @@ WORKDIR /tmp
 RUN \
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
-  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y apt-transport-https unzip curl python3-pip libcurl4-openssl-dev libssl-dev && \
+  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y apt-transport-https unzip curl pipx libcurl4-openssl-dev libssl-dev && \
   apt-get clean &&  \
   rm -rf /var/lib/apt/lists/*
 
@@ -66,7 +66,7 @@ COPY --from=gosu /usr/local/bin/gosu /usr/local/bin/
 
 # Install Opal Python Client
 
-RUN pip install obiba-opal
+RUN pipx install obiba-opal
 
 # Plugins dependencies
 #WORKDIR /projects
