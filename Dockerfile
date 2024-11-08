@@ -4,9 +4,9 @@
 # https://github.com/obiba/docker-opal
 #
 
-FROM tianon/gosu:latest AS gosu
+FROM docker.io/library/eclipse-temurin:21-jre-noble AS server-released
 
-FROM docker.io/library/eclipse-temurin:21-jre AS server-released
+LABEL OBiBa <dev@obiba.org>
 
 ENV OPAL_ADMINISTRATOR_PASSWORD password
 ENV OPAL_HOME /srv
@@ -25,11 +25,9 @@ ENV VALIDATE_PLUGIN_VERSION=2.0.0
 WORKDIR /tmp
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y daemon psmisc apt-transport-https unzip curl python3-pip libcurl4-openssl-dev libssl-dev && \
+    DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y gosu daemon psmisc apt-transport-https unzip curl python3-pip libcurl4-openssl-dev libssl-dev && \
     apt-get clean &&  \
     rm -rf /var/lib/apt/lists/*
-
-COPY --from=gosu /usr/local/bin/gosu /usr/local/bin/
 
 # Install Opal Python Client
 RUN pip install --break-system-packages obiba-opal
