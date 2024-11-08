@@ -4,9 +4,7 @@
 # https://github.com/obiba/docker-opal
 #
 
-FROM tianon/gosu:latest AS gosu
-
-FROM maven:3.9-eclipse-temurin-21-jammy AS building
+FROM maven:3.9-eclipse-temurin-21 AS building
 
 ENV OPAL_BRANCH master
 
@@ -23,7 +21,7 @@ WORKDIR /projects/opal
 RUN git checkout $OPAL_BRANCH; \
     mvn clean install
 
-FROM docker.io/library/eclipse-temurin:21-jre AS server
+FROM docker.io/library/eclipse-temurin:21-jre-noble AS server
 
 ENV OPAL_ADMINISTRATOR_PASSWORD password
 ENV OPAL_HOME /srv
@@ -47,7 +45,7 @@ WORKDIR /tmp
 RUN \
   apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
-  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y apt-transport-https unzip curl pipx libcurl4-openssl-dev libssl-dev && \
+  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y gosu apt-transport-https unzip curl python3-pip libcurl4-openssl-dev libssl-dev && \
   apt-get clean &&  \
   rm -rf /var/lib/apt/lists/*
 
@@ -62,11 +60,8 @@ RUN adduser --system --home $OPAL_HOME --no-create-home --disabled-password opal
     chown -R opal /opt/opal; \
     chmod +x $OPAL_DIST/bin/opal
 
-COPY --from=gosu /usr/local/bin/gosu /usr/local/bin/
-
 # Install Opal Python Client
-
-RUN pipx install obiba-opal
+RUN pip install --break-system-packages obiba-opal
 
 # Plugins dependencies
 #WORKDIR /projects
