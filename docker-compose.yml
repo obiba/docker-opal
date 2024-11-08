@@ -33,7 +33,7 @@ services:
                 volumes:
                         - /tmp/test-opal:/srv
         mongo:
-                image: mongo:6.0
+                image: mongo
                 environment:
                         - MONGO_INITDB_ROOT_USERNAME=root
                         - MONGO_INITDB_ROOT_PASSWORD=example
