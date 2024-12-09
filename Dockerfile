@@ -63,7 +63,8 @@ RUN \
 COPY /bin /opt/opal/bin
 COPY /data /opt/opal/data
 
-RUN adduser --system --home $OPAL_HOME --no-create-home --disabled-password opal; \
+RUN groupadd --system --gid 10041 opal && \
+    useradd --system --home $OPAL_HOME --no-create-home --uid 10041 --gid opal opal; \
     chmod +x -R /opt/opal/bin; \
     chown -R opal /opt/opal; \
     chmod +x $OPAL_DIST/bin/opal
