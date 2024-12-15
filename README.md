@@ -1,7 +1,7 @@
 Docker Opal
 ===========
 
-Use [docker compose](https://docs.docker.com/compose/) to launch opal, agate and mongodb applications:
+Use [docker compose](https://docs.docker.com/compose/) to launch opal, rock and mongodb/mysql/mariadb/postgres applications:
 
 ```
 docker-compose up

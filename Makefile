@@ -2,13 +2,7 @@
 # Docker helper
 #
 
-no_cache=false
-
-all:
-	docker build --no-cache=true -t="obiba/opal:$(tag)" . && \
-		docker build -t="obiba/opal:latest" . && \
-		docker image push obiba/opal:$(tag) && \
-		docker image push obiba/opal:latest
+no_cache=true
 
 # Build Docker image
 build:
