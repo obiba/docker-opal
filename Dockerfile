@@ -69,6 +69,12 @@ RUN groupadd --system --gid 10041 opal && \
     chown -R opal /opt/opal; \
     chmod +x $OPAL_DIST/bin/opal
 
+# Clean up
+RUN apt remove -y unzip curl wget && \
+    apt autoremove -y && \
+    apt clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/*
+
 WORKDIR $OPAL_HOME
 
 VOLUME $OPAL_HOME
