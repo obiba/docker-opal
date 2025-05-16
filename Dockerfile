@@ -11,7 +11,7 @@ ENV OPAL_BRANCH master
 SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends devscripts debhelper build-essential fakeroot git
+  apt-get install -y --no-install-recommends devscripts debhelper build-essential fakeroot git
 
 WORKDIR /projects
 RUN git clone https://github.com/obiba/opal.git
@@ -19,7 +19,7 @@ RUN git clone https://github.com/obiba/opal.git
 WORKDIR /projects/opal
 
 RUN git checkout $OPAL_BRANCH; \
-    mvn clean install
+  mvn clean install
 
 FROM docker.io/library/eclipse-temurin:21-jre-noble AS server
 
@@ -56,9 +56,9 @@ RUN cd /usr/share/ && \
   mv opal-server-* opal
 
 RUN adduser --system --home $OPAL_HOME --no-create-home --disabled-password opal; \
-    chmod +x -R /opt/opal/bin; \
-    chown -R opal /opt/opal; \
-    chmod +x $OPAL_DIST/bin/opal
+  chmod +x -R /opt/opal/bin; \
+  chown -R opal /opt/opal; \
+  chmod +x $OPAL_DIST/bin/opal
 
 # Install Opal Python Client
 RUN pip install --break-system-packages obiba-opal
@@ -98,7 +98,7 @@ RUN pip install --break-system-packages obiba-opal
 # Install Validate analysis plugin
 RUN \
   mkdir $OPAL_DIST/plugins; \
-#  curl -L -o $OPAL_DIST/plugins/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip https://github.com/obiba/jennite/releases/download/${VCF_STORE_VERSION}/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip; \
+  #  curl -L -o $OPAL_DIST/plugins/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip https://github.com/obiba/jennite/releases/download/${VCF_STORE_VERSION}/jennite-vcf-store-${VCF_STORE_VERSION}-dist.zip; \
   curl -L -o $OPAL_DIST/plugins/opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-limesurvey/releases/download/${LIMESURVEY_PLUGIN_VERSION}/opal-datasource-limesurvey-${LIMESURVEY_PLUGIN_VERSION}-dist.zip; \
   curl -L -o $OPAL_DIST/plugins/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-redcap/releases/download/${REDCAP_PLUGIN_VERSION}/opal-datasource-redcap-${REDCAP_PLUGIN_VERSION}-dist.zip; \
   curl -L -o $OPAL_DIST/plugins/opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-spss/releases/download/${SPSS_PLUGIN_VERSION}/opal-datasource-spss-${SPSS_PLUGIN_VERSION}-dist.zip; \
@@ -110,14 +110,14 @@ RUN \
 COPY /bin /opt/opal/bin
 COPY /data /opt/opal/data
 RUN chmod +x -R /opt/opal/bin; \
-    chown -R opal /opt/opal; \
-    chmod +x $OPAL_DIST/bin/opal
+  chown -R opal /opt/opal; \
+  chmod +x $OPAL_DIST/bin/opal
 
 # Clean up
-RUN apt remove -y unzip curl wget && \
-    apt autoremove -y && \
-    apt clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/*
+RUN apt remove -y wget && \
+  apt autoremove -y && \
+  apt clean && \
+  rm -rf /var/lib/apt/lists/* /tmp/*
 
 WORKDIR $OPAL_HOME
 
