@@ -32,15 +32,8 @@ RUN apt-get update && \
 # Install Opal Python Client
 RUN pip install --break-system-packages obiba-opal
 
-COPY opal/opal-server/target/opal-server-${OPAL_VERSION}-dist.zip /usr/share/opal-server-${OPAL_VERSION}-dist.zip
-
 # Install Opal Server
-RUN set -x && \
-  cd /usr/share/ && \
-  mv opal-server-${OPAL_VERSION}-dist.zip opal.zip && \
-  unzip -q opal.zip && \
-  rm opal.zip && \
-  mv opal-server-${OPAL_VERSION} opal
+COPY opal/opal-server/target/opal-server-${OPAL_VERSION} /usr/share/opal
 
 # Plugins dependencies
 WORKDIR /projects
