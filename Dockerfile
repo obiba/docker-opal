@@ -13,7 +13,7 @@ ENV OPAL_HOME=/srv
 ENV OPAL_DIST=/usr/share/opal
 ENV JAVA_OPTS="-Xms1G -Xmx2G -XX:+UseG1GC"
 
-ENV OPAL_VERSION=5.1.3
+ENV OPAL_VERSION=5.1-SNAPSHOT
 ENV LIMESURVEY_PLUGIN_VERSION=2.0.0
 ENV REDCAP_PLUGIN_VERSION=2.0.0
 ENV SPSS_PLUGIN_VERSION=2.0.0
@@ -32,10 +32,12 @@ RUN apt-get update && \
 # Install Opal Python Client
 RUN pip install --break-system-packages obiba-opal
 
+COPY opal/opal-server/target/opal-server-${OPAL_VERSION}-dist.zip /usr/share/opal-server-${OPAL_VERSION}-dist.zip
+
 # Install Opal Server
 RUN set -x && \
   cd /usr/share/ && \
-  wget -q -O opal.zip https://github.com/obiba/opal/releases/download/${OPAL_VERSION}/opal-server-${OPAL_VERSION}-dist.zip && \
+  mv opal-server-${OPAL_VERSION}-dist.zip opal.zip && \
   unzip -q opal.zip && \
   rm opal.zip && \
   mv opal-server-${OPAL_VERSION} opal
@@ -60,8 +62,8 @@ RUN \
   curl -L -o $OPAL_DIST/plugins/opal-datasource-googlesheets4-${GOOGLESHEETS_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-datasource-googlesheets4/releases/download/${GOOGLESHEETS_PLUGIN_VERSION}/opal-datasource-googlesheets4-${GOOGLESHEETS_PLUGIN_VERSION}-dist.zip && \
   curl -L -o $OPAL_DIST/plugins/opal-analysis-validate-${VALIDATE_PLUGIN_VERSION}-dist.zip https://github.com/obiba/opal-analysis-validate/releases/download/${VALIDATE_PLUGIN_VERSION}/opal-analysis-validate-${VALIDATE_PLUGIN_VERSION}-dist.zip
 
-COPY /bin /opt/opal/bin
-COPY /data /opt/opal/data
+COPY docker-opal/bin /opt/opal/bin
+COPY docker-opal/data /opt/opal/data
 
 RUN groupadd --system --gid 10041 opal && \
   useradd --system --home $OPAL_HOME --no-create-home --uid 10041 --gid opal opal; \
@@ -80,6 +82,6 @@ WORKDIR $OPAL_HOME
 VOLUME $OPAL_HOME
 EXPOSE 8080 8443
 
-COPY ./docker-entrypoint.sh /
+COPY docker-opal/docker-entrypoint.sh /
 ENTRYPOINT ["/bin/bash" ,"/docker-entrypoint.sh"]
 CMD ["app"]
