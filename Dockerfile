@@ -6,12 +6,12 @@
 
 FROM docker.io/library/eclipse-temurin:21-jre-noble AS server-released
 
-LABEL OBiBa <dev@obiba.org>
+LABEL OBiBa=<dev@obiba.org>
 
-ENV OPAL_ADMINISTRATOR_PASSWORD password
-ENV OPAL_HOME /srv
-ENV OPAL_DIST /usr/share/opal
-ENV JAVA_OPTS "-Xms1G -Xmx2G -XX:+UseG1GC"
+ENV OPAL_ADMINISTRATOR_PASSWORD=password
+ENV OPAL_HOME=/srv
+ENV OPAL_DIST=/usr/share/opal
+ENV JAVA_OPTS="-Xms1G -Xmx2G -XX:+UseG1GC"
 
 ENV OPAL_VERSION=5.1.3
 ENV LIMESURVEY_PLUGIN_VERSION=2.0.0
