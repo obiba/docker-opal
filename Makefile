@@ -12,3 +12,6 @@ build:
 push:
 	docker image push obiba/opal:$(tag)
 
+tag:
+	docker image tag obiba/opal:$(tag) obiba/opal:$(tag2)
+
