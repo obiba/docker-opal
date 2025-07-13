@@ -93,8 +93,6 @@ if [ -n "$MYSQLIDS_HOST" ]
 	DB_USER="root"
 	if [ -n "$MYSQLIDS_USER" ] ; then DB_USER=$MYSQLIDS_USER ; fi
 
-	DB_DB="$DB_DB?verifyServerCertificate=false\&useSSL=false"
-
 	makeJSONIDsDB "mysql" "com.mysql.jdbc.Driver" $MYSQLIDS_HOST $DB_PORT $DB_DB $DB_USER $MYSQLIDS_PASSWORD | \
 		opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
 fi
@@ -104,6 +102,7 @@ if [ -n "$MYSQLDATA_HOST" ]
 	echo "Initializing Opal data database with MySQL..."
 
 	DB_PORT="3306"
+	if [ -n "$MYSQLDATA_PORT" ] ; then DB_PORT=$MYSQLDATA_PORT ; fi
 	DB_DB="opal"
 	if [ -n "$MYSQLDATA_DATABASE" ] ; then DB_DB=$MYSQLDATA_DATABASE ; fi
 	DB_USER="root"
@@ -124,6 +123,7 @@ if [ -n "$MARIADBIDS_HOST" ] && [ -z "$MYSQLIDS_HOST" ]
 	echo "Initializing Opal IDs database with MariaDB..."
 
 	DB_PORT="3306"
+	if [ -n "$MARIADBIDS_PORT" ] ; then DB_PORT=$MARIADBIDS_PORT ; fi
 	DB_DB="opal"
 	if [ -n "$MARIADBIDS_DATABASE" ] ; then DB_DB=$MARIADBIDS_DATABASE ; fi
 	DB_USER="root"
@@ -138,6 +138,7 @@ if [ -n "$MARIADBDATA_HOST" ]
 	echo "Initializing Opal data database with MariaDB..."
 
 	DB_PORT="3306"
+	if [ -n "$MARIADBDATA_PORT" ] ; then DB_PORT=$MARIADBDATA_PORT ; fi
 	DB_DB="opal"
 	if [ -n "$MARIADBDATA_DATABASE" ] ; then DB_DB=$MARIADBDATA_DATABASE ; fi
 	DB_USER="root"
@@ -158,6 +159,7 @@ if [ -n "$POSTGRESIDS_HOST" ] && [ -z "$MARIADBIDS_HOST" ] && [ -z "$MYSQLIDS_HO
 	echo "Initializing Opal IDs database with PostgreSQL..."
 
 	DB_PORT="5432"
+	if [ -n "$POSTGRESIDS_PORT" ] ; then DB_PORT=$POSTGRESIDS_PORT ; fi
 	DB_DB="opal"
 	if [ -n "$POSTGRESIDS_DATABASE" ] ; then DB_DB=$POSTGRESIDS_DATABASE ; fi
 	DB_USER="root"
@@ -172,6 +174,7 @@ if [ -n "$POSTGRESDATA_HOST" ]
 	echo "Initializing Opal data database with PostgreSQL..."
 
 	DB_PORT="5432"
+	if [ -n "$POSTGRESDATA_PORT" ] ; then DB_PORT=$POSTGRESDATA_PORT ; fi
 	DB_DB="opal"
 	if [ -n "$POSTGRESDATA_DATABASE" ] ; then DB_DB=$POSTGRESDATA_DATABASE ; fi
 	DB_USER="root"
