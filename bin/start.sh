@@ -124,6 +124,19 @@ then
     set_property "rock.default.user.password" "$ROCK_USER_PASSWORD" "$OPAL_HOME/conf/opal-config.properties"
   fi
 
+  # Configure Rock pod specifications
+  if [ -n "$ROCK_POD_IMAGES_ALLOWED" ]
+    then
+    echo "Setting Rock pod allowed images..."
+    set_property "pods.rock.images.allowed" "$ROCK_POD_IMAGES_ALLOWED" "$OPAL_HOME/conf/opal-config.properties"
+  fi
+
+  if [ -n "$ROCK_POD_SPECS" ]
+    then
+    echo "Setting Rock pod specifications..."
+    set_property "pods.rock.specs" "$ROCK_POD_SPECS" "$OPAL_HOME/conf/opal-config.properties"
+  fi
+
   #
   # R repositories
   #
