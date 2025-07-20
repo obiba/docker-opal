@@ -186,10 +186,3 @@ if [ -n "$POSTGRESDATA_HOST" ]
 		opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m POST /system/databases --content-type "application/json"
 fi
 
-# Configure datashield packages
-if [ -n "$ROCK_HOSTS" ] || [ -n "$RSERVER_HOST" ]
-	then
-	echo "Initializing Datashield default profile..."
-	opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m PUT /datashield/packages/_publish
-	opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m PUT /datashield/profile/default/_enable
-fi
