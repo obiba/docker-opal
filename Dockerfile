@@ -25,7 +25,7 @@ ENV VALIDATE_PLUGIN_VERSION=2.0.0
 WORKDIR /tmp
 RUN apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
-  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y gosu daemon psmisc apt-transport-https unzip curl python3-pip libcurl4-openssl-dev libssl-dev && \
+  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y vim gosu daemon psmisc apt-transport-https unzip curl python3-pip libcurl4-openssl-dev libssl-dev && \
   apt-get clean &&  \
   rm -rf /var/lib/apt/lists/*
 
