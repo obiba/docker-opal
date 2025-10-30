@@ -178,7 +178,7 @@ fi
 if [ -f /opt/opal/bin/first_run.sh.done ]
 then
   echo "Starting Opal..."
-  /usr/share/opal/bin/opal
+  exec /usr/share/opal/bin/opal
 else
   echo "Starting Opal before first run script..."
   # check if 1st run. Then configure database and datashield.
