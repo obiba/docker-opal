@@ -35,10 +35,6 @@ then
   echo "Preparing default conf in $OPAL_HOME ..."
   mkdir -p $OPAL_HOME/conf
   cp -r /usr/share/opal/conf/* $OPAL_HOME/conf
-  if [ -f /opt/opal/bin/first_run.sh.done ]
-  then
-    mv /opt/opal/bin/first_run.sh.done /opt/opal/bin/first_run.sh
-  fi
 fi
 
 # Install default plugins
@@ -171,22 +167,20 @@ fi
 # Administrator password
 #
 
-if [ ! -f /opt/opal/bin/set_password.sh.done ]
+if [ ! -f $OPAL_HOME/.set_password.done ]
 then
   echo "Setting password..."
   /opt/opal/bin/set_password.sh
-  mv /opt/opal/bin/set_password.sh /opt/opal/bin/set_password.sh.done
+  touch $OPAL_HOME/.set_password.done
 fi
 
 # Start opal
-if [ -f /opt/opal/bin/first_run.sh.done ]
+if [ ! -f $OPAL_HOME/.first_run.done ]
 then
-  echo "Starting Opal..."
-  /usr/share/opal/bin/opal
-else
   echo "Starting Opal before first run script..."
   # check if 1st run. Then configure database and datashield.
   /usr/share/opal/bin/opal &
+  OPAL_PID=$!
   # Wait for the opal server to be up and running
   echo "Waiting for Opal to be ready..."
   until opal rest -o $OPAL_LOCAL_URL -u administrator -p $OPAL_ADMINISTRATOR_PASSWORD -m GET /system/databases &> /dev/null
@@ -195,7 +189,11 @@ else
   done
   echo "First run setup..."
   /opt/opal/bin/first_run.sh
-  mv /opt/opal/bin/first_run.sh /opt/opal/bin/first_run.sh.done
-  ls /srv/plugins
-  tail -f $OPAL_HOME/logs/opal.log
+  touch $OPAL_HOME/.first_run.done
+  echo "First run complete. Stopping background Opal..."
+  kill $OPAL_PID
+  wait $OPAL_PID
 fi
+
+echo "Starting Opal..."
+exec /usr/share/opal/bin/opal
