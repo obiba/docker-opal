@@ -149,6 +149,11 @@ then
   set_property "csrf.allowed" "$CSRF_ALLOWED" "$OPAL_HOME/conf/opal-config.properties"
 fi
 
+if [ -n "$CSRF_ALLOWED_AGENTS" ]
+then
+  set_property "csrf.allowed-agents" "$CSRF_ALLOWED_AGENTS" "$OPAL_HOME/conf/opal-config.properties"
+fi
+
 #
 # Administrator password
 #
