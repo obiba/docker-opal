@@ -1,10 +1,10 @@
 services:
         opal:
-                image: obiba/opal:latest
-                #image: obiba/opal:test
+                image: obiba/opal:snapshot
                 ports:
                         - "8880:8080"
                 links:
+                        - lgtm
                         - mongo
                         - mysqldata
                         - mariadbdata
@@ -29,6 +29,13 @@ services:
                         - POSTGRESDATA_USER=opal
                         - POSTGRESDATA_PASSWORD=password
                         - ROCK_HOSTS=rock:8085
+                        # OpenTelemetry: this one variable turns on the DataSHIELD audit log
+                        # export, the traces and the metrics. See them at http://localhost:3000
+                        - OTEL_EXPORTER_OTLP_ENDPOINT=http://lgtm:4318
+                        - OTEL_SERVICE_NAME=opal
+                        - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=local-dev
+                        # 60s by default, which is a long wait when trying things out
+                        - OTEL_METRIC_EXPORT_INTERVAL=5000
                 volumes:
                         - /tmp/test-opal:/srv
         mongo:
@@ -60,3 +67,21 @@ services:
                 image: obiba/rock:latest
                 volumes:
                         - /tmp/rock:/srv
+        # Collects and displays what Opal exports: an OpenTelemetry collector feeding Loki (logs),
+        # Tempo (traces) and Prometheus (metrics), with Grafana over all three.
+        #
+        #   http://localhost:3000  - admin / admin
+        #
+        #   Logs    Explore > Loki       {service_name="opal"}
+        #                                {service_name="opal", scope_name="datashield.user"}
+        #   Traces  Explore > Tempo      Search, service opal, span datashield.aggregate
+        #   Metrics Explore > Prometheus datashield_operation_count_total
+        #                                datashield_operation_duration_seconds_bucket
+        #                                datashield_session_active
+        #                                datashield_quota_rejection_total
+        #
+        # Nothing is persisted: everything is in the container and goes when it does.
+        lgtm:
+                image: grafana/otel-lgtm:0.11.10
+                ports:
+                        - "3000:3000"
