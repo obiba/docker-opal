@@ -29,6 +29,12 @@ services:
                         - POSTGRESDATA_USER=opal
                         - POSTGRESDATA_PASSWORD=password
                         - ROCK_HOSTS=rock:8085
+                        # OpenTelemetry: one variable turns on the audit log export, the
+                        # DataSHIELD traces and the DataSHIELD metrics. Uncomment it, and the
+                        # otel-collector service below, to see them.
+                        #- OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+                        #- OTEL_SERVICE_NAME=opal
+                        #- OTEL_METRIC_EXPORT_INTERVAL=5000
                 volumes:
                         - /tmp/test-opal:/srv
         mongo:
@@ -60,3 +66,10 @@ services:
                 image: obiba/rock:latest
                 volumes:
                         - /tmp/rock:/srv
+        # Prints every log record, span and metric Opal exports. Uncomment the OTEL_ variables on
+        # the opal service above, and add otel-collector to its links, to send anything here.
+        otel-collector:
+                image: otel/opentelemetry-collector-contrib:0.140.0
+                command: ["--config=/etc/otel/config.yaml"]
+                volumes:
+                        - ./otel-collector-config.yml:/etc/otel/config.yaml:ro
