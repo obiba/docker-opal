@@ -29,9 +29,11 @@ services:
                         - POSTGRESDATA_USER=opal
                         - POSTGRESDATA_PASSWORD=password
                         - ROCK_HOSTS=rock:8085
-                        # OpenTelemetry: one variable turns on the audit log export, the
-                        # DataSHIELD traces and the DataSHIELD metrics. Uncomment it, and the
-                        # otel-collector service below, to see them.
+                        # OpenTelemetry: one variable turns on the log export, the DataSHIELD
+                        # session traces and the DataSHIELD metrics. Uncomment it, and the
+                        # otel-collector service below, to see them. Plain http is fine here
+                        # because the collector is on the compose network; anywhere else the
+                        # stream carries R expressions and usernames and needs https.
                         #- OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
                         #- OTEL_SERVICE_NAME=opal
                         #- OTEL_METRIC_EXPORT_INTERVAL=5000
