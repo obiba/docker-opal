@@ -4,7 +4,7 @@
 # https://github.com/obiba/docker-opal
 #
 
-FROM docker.io/library/eclipse-temurin:21-jre-noble AS server-released
+FROM docker.io/library/eclipse-temurin:25-jre-resolute AS server-released
 
 LABEL OBiBa=<dev@obiba.org>
 
@@ -65,7 +65,7 @@ RUN groupadd --system --gid 10041 opal && \
   chmod +x $OPAL_DIST/bin/opal
 
 # Clean up
-RUN apt remove -y curl wget && \
+RUN apt remove -y curl && \
   apt autoremove -y && \
   apt clean && \
   rm -rf /var/lib/apt/lists/* /tmp/*
