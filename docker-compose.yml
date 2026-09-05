@@ -5,6 +5,7 @@ services:
                 ports:
                         - "8880:8080"
                 links:
+                        - lgtm
                         - mongo
                         - mysqldata
                         - mariadbdata
@@ -29,14 +30,13 @@ services:
                         - POSTGRESDATA_USER=opal
                         - POSTGRESDATA_PASSWORD=password
                         - ROCK_HOSTS=rock:8085
-                        # OpenTelemetry: one variable turns on the log export, the DataSHIELD
-                        # session traces and the DataSHIELD metrics. Uncomment it, and the
-                        # otel-collector service below, to see them. Plain http is fine here
-                        # because the collector is on the compose network; anywhere else the
-                        # stream carries R expressions and usernames and needs https.
-                        #- OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
-                        #- OTEL_SERVICE_NAME=opal
-                        #- OTEL_METRIC_EXPORT_INTERVAL=5000
+                        # OpenTelemetry: this one variable turns on the DataSHIELD audit log
+                        # export, the traces and the metrics. See them at http://localhost:3000
+                        - OTEL_EXPORTER_OTLP_ENDPOINT=http://lgtm:4318
+                        - OTEL_SERVICE_NAME=opal
+                        - OTEL_RESOURCE_ATTRIBUTES=deployment.environment=production
+                        # 60s by default, which is a long wait when trying things out
+                        - OTEL_METRIC_EXPORT_INTERVAL=5000
                 volumes:
                         - /tmp/test-opal:/srv
         mongo:
@@ -68,10 +68,21 @@ services:
                 image: obiba/rock:latest
                 volumes:
                         - /tmp/rock:/srv
-        # Prints every log record, span and metric Opal exports. Uncomment the OTEL_ variables on
-        # the opal service above, and add otel-collector to its links, to send anything here.
-        otel-collector:
-                image: otel/opentelemetry-collector-contrib:0.140.0
-                command: ["--config=/etc/otel/config.yaml"]
-                volumes:
-                        - ./otel-collector-config.yml:/etc/otel/config.yaml:ro
+        # Collects and displays what Opal exports: an OpenTelemetry collector feeding Loki (logs),
+        # Tempo (traces) and Prometheus (metrics), with Grafana over all three.
+        #
+        #   http://localhost:3000  - admin / admin
+        #
+        #   Logs    Explore > Loki       {service_name="opal"}
+        #                                {service_name="opal", scope_name="datashield.user"}
+        #   Traces  Explore > Tempo      Search, service opal, span datashield.aggregate
+        #   Metrics Explore > Prometheus datashield_operation_count_total
+        #                                datashield_operation_duration_seconds_bucket
+        #                                datashield_session_active
+        #                                datashield_quota_rejection_total
+        #
+        # Nothing is persisted: everything is in the container and goes when it does.
+        lgtm:
+                image: grafana/otel-lgtm:0.11.10
+                ports:
+                        - "3000:3000"
