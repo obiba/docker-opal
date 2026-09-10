@@ -37,6 +37,16 @@ when it picks the endpoint up. A signal-specific endpoint (`OTEL_EXPORTER_OTLP_L
 | `OTEL_EXPORTER_OTLP_CLIENT_CERTIFICATE`, `..._CLIENT_KEY` | client cert and key, for mTLS |
 | `OTEL_METRIC_EXPORT_INTERVAL` | metrics are exported every 60s by default |
 
+The protocol, the service name and the three per-signal exporters are set by Opal as defaults only,
+so the matching `OTEL_` variables still override them. Two are worth knowing about:
+
+- `OTEL_EXPORTER_OTLP_PROTOCOL` - leave it alone. Opal ships the OTLP/HTTP sender only, so `grpc`
+  fails to build the SDK. Opal logs `Failed to initialize OpenTelemetry, continuing without it`,
+  starts, and exports nothing.
+- `OTEL_LOGS_EXPORTER`, `OTEL_TRACES_EXPORTER`, `OTEL_METRICS_EXPORTER` - set one to `none` to drop
+  that signal and keep the other two. `OTEL_SDK_DISABLED=true` turns everything off without having
+  to unset the endpoint.
+
 ### What is exported
 
 - **Logs**: `opal.log` and `rest.log` records, and the DataSHIELD audit trail on scope
@@ -78,11 +88,19 @@ entries that use them, from the image's file into yours.
 
 ### Trying it locally
 
-Uncomment the `OTEL_` variables on the `opal` service in `docker-compose.yml`, add `otel-collector`
-to its `links`, and uncomment the `otel-collector` service. `docker compose logs otel-collector`
-then prints every record, span and data point as it arrives. Then open a DataSHIELD session, assign
-a table, run an aggregation and close it: the collector prints one log record per action, the
-spans of the session's trace, and the metrics on the next export.
+`docker-compose.yml` already points Opal at an `lgtm` service - the `grafana/otel-lgtm` image, an
+OpenTelemetry collector feeding Loki (logs), Tempo (traces) and Prometheus (metrics), with Grafana
+over all three. `docker compose up`, then open
+[http://localhost:3000](http://localhost:3000) (admin / admin), open a DataSHIELD session, assign a
+table, run an aggregation and close it:
+
+| | |
+| --- | --- |
+| Logs | Explore > Loki, `{service_name="opal"}`, or `{service_name="opal", scope_name="datashield.user"}` for the audit trail alone |
+| Traces | Explore > Tempo, Search, service `opal`, span `datashield.aggregate` |
+| Metrics | Explore > Prometheus, `datashield_operation_count_total`, `datashield_operation_duration_seconds_bucket`, `datashield_session_active`, `datashield_quota_rejection_total` |
+
+Nothing is persisted: the whole stack is in the container and goes when it does.
 
 To trace the HTTP requests, JDBC and R server calls around the DataSHIELD operations as well, mount
 the OpenTelemetry Java agent and pass it with `-e JAVA_OPTS="-Xms1G -Xmx2G -javaagent:/opt/opentelemetry-javaagent.jar"`.
