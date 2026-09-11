@@ -65,7 +65,7 @@ services:
                         - POSTGRES_USER=opal
                         - POSTGRES_PASSWORD=password
         rock:
-                image: obiba/rock:latest
+                image: datashield/rock-base:latest
                 volumes:
                         - /tmp/rock:/srv
         # Collects and displays what Opal exports: an OpenTelemetry collector feeding Loki (logs),
