@@ -53,3 +53,32 @@ is written exactly as before — the export is additive.
 Nothing is persisted: the whole stack lives in the container and goes when it does. To turn the
 export off, comment out the `OTEL_` variables on the `opal` service; with no endpoint set Opal builds
 no SDK and sends nothing.
+
+### Traces in MLflow
+
+[MLflow](https://mlflow.org) Server (3.6+) accepts OpenTelemetry traces over OTLP/HTTP, and
+`docker-compose.mlflow.yml` is an overlay that sends Opal's traces there instead of Tempo:
+
+```
+docker compose -f docker-compose.yml -f docker-compose.mlflow.yml up
+```
+
+Then open [http://localhost:5000](http://localhost:5000), run a DataSHIELD session, and look under
+**Experiments > Default > Traces**. One session is one trace, rooted in a `datashield.session` span
+with the `datashield.parse`, `datashield.aggregate`, `datashield.assign` and `datashield.close`
+spans under it, each carrying the `datashield.action`, `datashield.profile`, `datashield.session.id`
+and `datashield.script` attributes of the audit log. The root span is only exported when the session
+ends, so the trace shows as **In progress** until the session is closed, then completes with the
+session's full duration.
+
+MLflow only takes traces, so the audit logs and the metrics still go to Grafana: the overlay adds the
+signal-specific variables and leaves `OTEL_EXPORTER_OTLP_ENDPOINT` in place for the other two.
+
+```
+OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://mlflow:5000/v1/traces
+OTEL_EXPORTER_OTLP_TRACES_HEADERS=x-mlflow-experiment-id=0
+```
+
+Experiment `0` is the `Default` one that every MLflow has. To file the traces elsewhere, create an
+experiment in the UI and put its id in the header. The MLflow store is a SQLite file inside the
+container, gone with it like the rest of the stack.

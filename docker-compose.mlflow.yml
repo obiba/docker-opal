@@ -1,0 +1,40 @@
+# Overlay: send the DataSHIELD traces to MLflow instead of Tempo.
+#
+#   docker compose -f docker-compose.yml -f docker-compose.mlflow.yml up
+#
+# MLflow Server (3.6+) exposes an OTLP/HTTP endpoint at /v1/traces and shows what it receives in
+# the experiment's Traces tab. It takes traces only, so the audit logs and the metrics keep going to
+# the LGTM stack through the generic OTEL_EXPORTER_OTLP_ENDPOINT: the signal-specific variable set
+# here wins over it for traces alone.
+#
+#   http://localhost:5000  - Experiments > Default > Traces
+#
+# The experiment is named by id in a header. 0 is the Default experiment, which every SQL-backed
+# MLflow has from the start; to file the traces elsewhere create an experiment in the UI and put its
+# id in OTEL_EXPORTER_OTLP_TRACES_HEADERS.
+#
+# Nothing is persisted: the SQLite store lives in the container and goes when it does.
+services:
+        opal:
+                links:
+                        - mlflow
+                environment:
+                        - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://mlflow:5000/v1/traces
+                        - OTEL_EXPORTER_OTLP_TRACES_HEADERS=x-mlflow-experiment-id=0
+                        # MLflow only speaks OTLP/HTTP, which is Opal's default; stated so a
+                        # OTEL_EXPORTER_OTLP_PROTOCOL=grpc in the environment cannot break it
+                        - OTEL_EXPORTER_OTLP_TRACES_PROTOCOL=http/protobuf
+        mlflow:
+                image: ghcr.io/mlflow/mlflow:v3.16.0
+                # The OTLP endpoint needs a SQL backend store; the default file store will not do.
+                # MLflow refuses any Host header but localhost and private IPs as a DNS rebinding
+                # guard, and Opal reaches it as mlflow:5000 - hence --allowed-hosts. The list replaces
+                # the default rather than extending it and matches port included, so the browser's
+                # localhost:5000 has to be spelled out again for the UI.
+                command: >
+                        mlflow server --host 0.0.0.0 --port 5000
+                        --backend-store-uri sqlite:////mlflow/mlflow.db
+                        --artifacts-destination /mlflow/artifacts
+                        --allowed-hosts localhost:5000,127.0.0.1:5000,mlflow:5000
+                ports:
+                        - "5000:5000"
