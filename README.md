@@ -11,6 +11,61 @@ Then connect to:
 
 [http://localhost:8880](http://localhost:8880)
 
+Configuration database
+----------------------
+
+Since Opal 6.0.0, Opal keeps its own configuration (projects, permissions, users, registered
+databases, DataSHIELD profiles...) in an embedded H2 database under `$OPAL_HOME/data/config`. To
+keep it on a PostgreSQL server instead, set `POSTGRESCONFIG_HOST`:
+
+```
+docker run -e POSTGRESCONFIG_HOST=postgres -e POSTGRESCONFIG_PASSWORD=secret obiba/opal
+```
+
+| Variable | |
+| --- | --- |
+| `POSTGRESCONFIG_HOST` | the PostgreSQL server. Setting it is what switches the configuration database over |
+| `POSTGRESCONFIG_PORT` | defaults to `5432` |
+| `POSTGRESCONFIG_DATABASE` | an existing, empty database, `opal_config` by default. Opal creates the schema itself |
+| `POSTGRESCONFIG_USER` | defaults to `opal` |
+| `POSTGRESCONFIG_PASSWORD` | required: the embedded database uses a password Opal generates, an external one uses the server's |
+
+These are written to `config.datasource.*` and `config.hibernate.dialect` in
+`conf/opal-config.properties` at every start, and Opal waits for the port to answer before
+starting, so a database container started at the same time is fine.
+
+Two things to know:
+
+- **Set it before the first start.** Opal writes its configuration to whatever database is
+  configured at that moment, and pointing an Opal that already has a configuration at an empty
+  PostgreSQL gives an Opal with an empty configuration: no administrator password set, no
+  databases registered, no projects. The `.set_password.done` and `.first_run.done` markers in
+  `OPAL_HOME` are not reset, so the first-run setup does not run again either.
+- **Back it up together with `OPAL_HOME`.** With the embedded database, `data/config` and
+  `data/opal-config.xml` travel together in the volume. On PostgreSQL the configuration is in the
+  server, and the secret key that salts its user passwords and encrypts its stored credentials is still in
+  `data/opal-config.xml`: a restore needs both from the same moment.
+
+The other databases (`MONGO_*`, `MYSQLDATA_*`, `MARIADBDATA_*`, `POSTGRESDATA_*`, and the `*IDS_*`
+ones) are unchanged: they hold the data and the identifiers, and are registered in the
+configuration through Opal's REST API on the first run.
+
+`docker-compose.postgres.yml` is a full PostgreSQL setup: one server for the configuration, one
+for the data, and no MongoDB, MySQL or MariaDB. It is a stack of its own rather than an overlay:
+
+```
+docker compose -f docker-compose.postgres.yml up
+```
+
+Everything in it, Opal's home, the two PostgreSQL servers and Rock's home, is on a named volume,
+so a `docker compose down` keeps the configuration and the data together and
+
+```
+docker compose -f docker-compose.postgres.yml down -v
+```
+
+removes them together. There is no `/tmp/test-opal` to delete by hand.
+
 OpenTelemetry
 -------------
 
