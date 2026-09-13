@@ -50,7 +50,7 @@ volumes:
         rock-home-h2:
 
 # One network of its own, so that these containers see each other and nothing else on the host.
-# Service names resolve on it: postgresconfig, postgresdata, rock, lgtm.
+# Service names resolve on it: rock, lgtm.
 networks:
         opal-h2:
                 name: opal-h2
