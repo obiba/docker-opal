@@ -26,6 +26,25 @@ cd ../docker-opal && make build
 `opal/opal-server/target/` — `6.0-SNAPSHOT` at the time of writing. `make build` tags the image
 `obiba/opal:snapshot`, which is what `docker-compose.yml` runs.
 
+### Configuration database on PostgreSQL
+
+Since 6.0.0 Opal keeps its own configuration in an embedded H2 database under
+`$OPAL_HOME/data/config`. `POSTGRESCONFIG_HOST`, `_PORT`, `_DATABASE`, `_USER` and `_PASSWORD`
+point it at a PostgreSQL server instead: the start script writes them to `config.datasource.*` and
+`config.hibernate.dialect` in `opal-config.properties` and waits for the port before starting Opal.
+The password is required, the other defaults are `5432`, `opal_config` and `opal`.
+
+`docker-compose.postgres.yml` is a full PostgreSQL stack, configuration and data on two servers,
+everything on named volumes and on a network of its own:
+
+```
+docker compose -f docker-compose.postgres.yml up
+```
+
+Opal writes its configuration to whatever database is configured at its first start, so this has
+to be in place before the `opal-home` volume exists. To start over, `down -v` removes the volumes
+together.
+
 ### OpenTelemetry
 
 `docker compose up` also starts a `grafana/otel-lgtm` container: an OpenTelemetry collector feeding
