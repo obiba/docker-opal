@@ -11,6 +11,62 @@ Then connect to:
 
 [http://localhost:8880](http://localhost:8880)
 
+Standalone setup
+----------------
+
+`docker-compose.h2.yml` is the smallest stack: Opal, Rock and the Grafana stack of the
+[OpenTelemetry](#opentelemetry) section, and no database server at all. It is a stack of its own,
+not an overlay:
+
+```
+docker compose -f docker-compose.h2.yml up
+```
+
+With no `MONGO_*`, `MYSQLDATA_*`, `MARIADBDATA_*` or `POSTGRESDATA_*` variable set, Opal starts
+with its configuration in the embedded H2 database (see below), the first-run setup registers no
+data database, and the projects have nowhere to store their tables until one is registered under
+**Administration > Databases**. That is enough to log in, run DataSHIELD on resources with Rock,
+or try the OpenTelemetry export at [http://localhost:3000](http://localhost:3000), without a MongoDB
+or an SQL server to run.
+
+Opal's home and Rock's home are on named volumes, `opal-home-h2` and `rock-home-h2`, so the
+configuration survives a `docker compose down` and
+
+```
+docker compose -f docker-compose.h2.yml down -v
+```
+
+starts over. The network and the volumes are named apart from the default stack's (`opal-h2` rather
+than `opal`), so switching from one stack to the other does not mix their homes; both publish
+ports 8880 and 3000 though, so bring one down before starting the other.
+
+All-PostgreSQL setup
+--------------------
+
+`docker-compose.postgres.yml` puts everything on one database engine: a `postgresconfig` server
+for Opal's configuration (see [Configuration database](#configuration-database) below), a
+`postgresdata` server for the data, and no MongoDB, MySQL or MariaDB. Like the standalone one it
+is a stack of its own rather than an overlay:
+
+```
+docker compose -f docker-compose.postgres.yml up
+```
+
+The `POSTGRESCONFIG_*` variables are in the compose file from the start, which is what the
+configuration database needs: they cannot be added to an Opal that has already started once.
+
+Everything in it, Opal's home, the two PostgreSQL servers and Rock's home, is on a named volume
+(`opal-home-pg`, `opal-config-pg`, `opal-data-pg`, `rock-home-pg`), so a `docker compose down`
+keeps the configuration and the data together and
+
+```
+docker compose -f docker-compose.postgres.yml down -v
+```
+
+removes them together, which matters here more than elsewhere: the secret key in Opal's home and
+the configuration in `postgresconfig` are only good as a pair. The network is `opal-postgres`, apart
+from the other stacks', and it publishes the same ports 8880 and 3000.
+
 Configuration database
 ----------------------
 
@@ -49,22 +105,6 @@ Two things to know:
 The other databases (`MONGO_*`, `MYSQLDATA_*`, `MARIADBDATA_*`, `POSTGRESDATA_*`, and the `*IDS_*`
 ones) are unchanged: they hold the data and the identifiers, and are registered in the
 configuration through Opal's REST API on the first run.
-
-`docker-compose.postgres.yml` is a full PostgreSQL setup: one server for the configuration, one
-for the data, and no MongoDB, MySQL or MariaDB. It is a stack of its own rather than an overlay:
-
-```
-docker compose -f docker-compose.postgres.yml up
-```
-
-Everything in it, Opal's home, the two PostgreSQL servers and Rock's home, is on a named volume,
-so a `docker compose down` keeps the configuration and the data together and
-
-```
-docker compose -f docker-compose.postgres.yml down -v
-```
-
-removes them together. There is no `/tmp/test-opal` to delete by hand.
 
 OpenTelemetry
 -------------
