@@ -2,23 +2,12 @@ services:
         opal:
                 image: obiba/opal:snapshot
                 networks:
-                        - opal-postgres
+                        - opal-h2
                 #image: obiba/opal:test
                 ports:
                         - "8880:8080"
                 environment:
                         - OPAL_ADMINISTRATOR_PASSWORD=password
-                        # Opal's own configuration on PostgreSQL instead of the embedded H2 database.
-                        # Must be there from the first start: see the README.
-                        - POSTGRESCONFIG_DATABASE=opal_config
-                        - POSTGRESCONFIG_HOST=postgresconfig
-                        - POSTGRESCONFIG_USER=opal
-                        - POSTGRESCONFIG_PASSWORD=password
-                        # Opal's data on PostgreSQL.
-                        - POSTGRESDATA_DATABASE=opal
-                        - POSTGRESDATA_HOST=postgresdata
-                        - POSTGRESDATA_USER=opal
-                        - POSTGRESDATA_PASSWORD=password
                         - ROCK_HOSTS=rock:8085
                         # OpenTelemetry: this one variable turns on the DataSHIELD audit log
                         # export, the traces and the metrics. See them at http://localhost:3000
@@ -28,33 +17,13 @@ services:
                         # 60s by default, which is a long wait when trying things out
                         - OTEL_METRIC_EXPORT_INTERVAL=5000
                 volumes:
-                        - opal-home-pg:/srv
-        postgresdata:
-                image: postgres:18
-                networks:
-                        - opal-postgres
-                environment:
-                        - POSTGRES_DB=opal
-                        - POSTGRES_USER=opal
-                        - POSTGRES_PASSWORD=password
-                volumes:
-                        - opal-data-pg:/var/lib/postgresql
-        postgresconfig:
-                image: postgres:18
-                networks:
-                        - opal-postgres
-                environment:
-                        - POSTGRES_DB=opal_config
-                        - POSTGRES_USER=opal
-                        - POSTGRES_PASSWORD=password
-                volumes:
-                        - opal-config-pg:/var/lib/postgresql
+                        - opal-home-h2:/srv
         rock:
                 image: datashield/rock-base:latest
                 networks:
-                        - opal-postgres
+                        - opal-h2
                 volumes:
-                        - rock-home-pg:/srv
+                        - rock-home-h2:/srv
         # Collects and displays what Opal exports: an OpenTelemetry collector feeding Loki (logs),
         # Tempo (traces) and Prometheus (metrics), with Grafana over all three.
         #
@@ -72,18 +41,16 @@ services:
         lgtm:
                 image: grafana/otel-lgtm:0.11.10
                 networks:
-                        - opal-postgres
+                        - opal-h2
                 ports:
                         - "3000:3000"
 
 volumes:
-        opal-home-pg:
-        opal-config-pg:
-        opal-data-pg:
-        rock-home-pg:
+        opal-home-h2:
+        rock-home-h2:
 
 # One network of its own, so that these containers see each other and nothing else on the host.
 # Service names resolve on it: postgresconfig, postgresdata, rock, lgtm.
 networks:
-        opal-postgres:
-                name: opal-postgres
+        opal-h2:
+                name: opal-h2
