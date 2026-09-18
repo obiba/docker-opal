@@ -4,7 +4,7 @@
 # https://github.com/obiba/docker-opal
 #
 
-FROM docker.io/library/eclipse-temurin:21-jre-noble AS server-released
+FROM docker.io/library/eclipse-temurin:25-jre-resolute AS server-released
 
 LABEL OBiBa=<dev@obiba.org>
 
@@ -13,7 +13,7 @@ ENV OPAL_HOME=/srv
 ENV OPAL_DIST=/usr/share/opal
 ENV JAVA_OPTS="-Xms1G -Xmx2G -XX:+UseG1GC"
 
-ENV OPAL_VERSION=5.7.6
+ENV OPAL_VERSION=6.0.0
 ENV LIMESURVEY_PLUGIN_VERSION=2.0.0
 ENV REDCAP_PLUGIN_VERSION=2.0.0
 ENV SPSS_PLUGIN_VERSION=2.0.0
@@ -25,7 +25,7 @@ ENV VALIDATE_PLUGIN_VERSION=2.0.0
 WORKDIR /tmp
 RUN apt-get update && \
   DEBIAN_FRONTEND=noninteractive apt-get upgrade -y && \
-  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y gosu daemon psmisc apt-transport-https unzip curl python3-pip libcurl4-openssl-dev libssl-dev && \
+  DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y gosu daemon psmisc apt-transport-https unzip curl wget python3-pip libcurl4-openssl-dev libssl-dev && \
   apt-get clean &&  \
   rm -rf /var/lib/apt/lists/*
 

@@ -1,25 +1,20 @@
 services:
         opal:
                 image: obiba/opal:latest
+                networks:
+                        - opal-postgres
                 #image: obiba/opal:test
                 ports:
                         - "8880:8080"
-                networks:
-                        - opal
                 environment:
                         - OPAL_ADMINISTRATOR_PASSWORD=password
-                        - MONGO_HOST=mongo
-                        - MONGO_PORT=27017
-                        - MONGO_USER=root
-                        - MONGO_PASSWORD=example
-                        - MYSQLDATA_DATABASE=opal
-                        - MYSQLDATA_HOST=mysqldata
-                        - MYSQLDATA_USER=opal
-                        - MYSQLDATA_PASSWORD=password
-                        - MARIADBDATA_DATABASE=opal
-                        - MARIADBDATA_HOST=mariadbdata
-                        - MARIADBDATA_USER=opal
-                        - MARIADBDATA_PASSWORD=password
+                        # Opal's own configuration on PostgreSQL instead of the embedded H2 database.
+                        # Must be there from the first start: see the README.
+                        - POSTGRESCONFIG_DATABASE=opal_config
+                        - POSTGRESCONFIG_HOST=postgresconfig
+                        - POSTGRESCONFIG_USER=opal
+                        - POSTGRESCONFIG_PASSWORD=password
+                        # Opal's data on PostgreSQL.
                         - POSTGRESDATA_DATABASE=opal
                         - POSTGRESDATA_HOST=postgresdata
                         - POSTGRESDATA_USER=opal
@@ -33,54 +28,33 @@ services:
                         # 60s by default, which is a long wait when trying things out
                         - OTEL_METRIC_EXPORT_INTERVAL=5000
                 volumes:
-                        - opal-home:/srv
-        mongo:
-                image: mongo
-                networks:
-                        - opal
-                environment:
-                        - MONGO_INITDB_ROOT_USERNAME=root
-                        - MONGO_INITDB_ROOT_PASSWORD=example
-                volumes:
-                        - mongo-data:/data/db
-        mysqldata:
-                image: mysql
-                networks:
-                        - opal
-                environment:
-                        - MYSQL_DATABASE=opal
-                        - MYSQL_ROOT_PASSWORD=password
-                        - MYSQL_USER=opal
-                        - MYSQL_PASSWORD=password
-                volumes:
-                        - mysql-data:/var/lib/mysql
-        mariadbdata:
-                image: mariadb
-                networks:
-                        - opal
-                environment:
-                        - MYSQL_DATABASE=opal
-                        - MYSQL_ROOT_PASSWORD=password
-                        - MYSQL_USER=opal
-                        - MYSQL_PASSWORD=password
-                volumes:
-                        - mariadb-data:/var/lib/mysql
+                        - opal-home-pg:/srv
         postgresdata:
-                image: postgres
+                image: postgres:18
                 networks:
-                        - opal
+                        - opal-postgres
                 environment:
                         - POSTGRES_DB=opal
                         - POSTGRES_USER=opal
                         - POSTGRES_PASSWORD=password
                 volumes:
-                        - postgres-data:/var/lib/postgresql
+                        - opal-data-pg:/var/lib/postgresql
+        postgresconfig:
+                image: postgres:18
+                networks:
+                        - opal-postgres
+                environment:
+                        - POSTGRES_DB=opal_config
+                        - POSTGRES_USER=opal
+                        - POSTGRES_PASSWORD=password
+                volumes:
+                        - opal-config-pg:/var/lib/postgresql
         rock:
                 image: datashield/rock-base:latest
                 networks:
-                        - opal
+                        - opal-postgres
                 volumes:
-                        - rock-home:/srv
+                        - rock-home-pg:/srv
         # Collects and displays what Opal exports: an OpenTelemetry collector feeding Loki (logs),
         # Tempo (traces) and Prometheus (metrics), with Grafana over all three.
         #
@@ -98,20 +72,18 @@ services:
         lgtm:
                 image: grafana/otel-lgtm:0.11.10
                 networks:
-                        - opal
+                        - opal-postgres
                 ports:
                         - "3000:3000"
 
 volumes:
-        opal-home:
-        mongo-data:
-        mysql-data:
-        mariadb-data:
-        postgres-data:
-        rock-home:
+        opal-home-pg:
+        opal-config-pg:
+        opal-data-pg:
+        rock-home-pg:
 
 # One network of its own, so that these containers see each other and nothing else on the host.
-# Service names resolve on it: mongo, mysqldata, mariadbdata, postgresdata, rock, lgtm.
+# Service names resolve on it: postgresconfig, postgresdata, rock, lgtm.
 networks:
-        opal:
-                name: opal
+        opal-postgres:
+                name: opal-postgres

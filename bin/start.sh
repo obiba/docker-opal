@@ -62,6 +62,47 @@ then
 fi
 
 #
+# Configuration database
+#
+# Opal keeps its own configuration (projects, permissions, users, registered databases...) in an
+# embedded H2 database under $OPAL_HOME/data/config. Point it at a PostgreSQL server instead with
+# POSTGRESCONFIG_HOST. This has to be set before the first start: Opal writes its configuration
+# to whatever is configured at that moment.
+#
+
+if [ -n "$POSTGRESCONFIG_HOST" ]
+then
+  echo "Setting configuration database connection (PostgreSQL)..."
+
+  DB_PORT="5432"
+  if [ -n "$POSTGRESCONFIG_PORT" ] ; then DB_PORT=$POSTGRESCONFIG_PORT ; fi
+  DB_DB="opal_config"
+  if [ -n "$POSTGRESCONFIG_DATABASE" ] ; then DB_DB=$POSTGRESCONFIG_DATABASE ; fi
+  DB_USER="opal"
+  if [ -n "$POSTGRESCONFIG_USER" ] ; then DB_USER=$POSTGRESCONFIG_USER ; fi
+  if [ -z "$POSTGRESCONFIG_PASSWORD" ]
+  then
+    echo "POSTGRESCONFIG_PASSWORD is required: Opal cannot connect to an external configuration database without one."
+    exit 1
+  fi
+
+  set_property "config.datasource.url" "jdbc:postgresql://$POSTGRESCONFIG_HOST:$DB_PORT/$DB_DB" "$OPAL_HOME/conf/opal-config.properties"
+  set_property "config.datasource.driverClass" "org.postgresql.Driver" "$OPAL_HOME/conf/opal-config.properties"
+  set_property "config.datasource.username" "$DB_USER" "$OPAL_HOME/conf/opal-config.properties"
+  set_property "config.datasource.password" "$POSTGRESCONFIG_PASSWORD" "$OPAL_HOME/conf/opal-config.properties"
+  set_property "config.hibernate.dialect" "org.hibernate.dialect.PostgreSQLDialect" "$OPAL_HOME/conf/opal-config.properties"
+
+  # Opal refuses to start when its configuration database is unreachable, and a database container
+  # started at the same time is usually not ready yet.
+  echo "Waiting for $POSTGRESCONFIG_HOST:$DB_PORT..."
+  for i in $(seq 1 30)
+  do
+    if (exec 3<>/dev/tcp/$POSTGRESCONFIG_HOST/$DB_PORT) 2>/dev/null ; then break ; fi
+    sleep 2
+  done
+fi
+
+#
 # Agate
 #
 
