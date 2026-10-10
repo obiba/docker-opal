@@ -191,6 +191,15 @@ then
 fi
 
 #
+# Cross-Origin Resource Sharing (CORS)
+#
+
+if [ -n "$CORS_ALLOWED" ]
+then
+  set_property "cors.allowed" "$CORS_ALLOWED" "$OPAL_HOME/conf/opal-config.properties"
+fi
+
+#
 # Administrator password
 #
 
