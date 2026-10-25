@@ -101,3 +101,13 @@ OTEL_EXPORTER_OTLP_TRACES_HEADERS=x-mlflow-experiment-id=0
 Experiment `0` is the `Default` one that every MLflow has. To file the traces elsewhere, create an
 experiment in the UI and put its id in the header. The MLflow store is a SQLite file inside the
 container, gone with it like the rest of the stack.
+
+Running as a non-root user
+--------------------------
+
+The image starts as root by default: the entrypoint takes ownership of `OPAL_HOME` for the `opal`
+user (uid and gid 10041) and drops to it before starting Opal. Started as that user instead, with
+`--user 10041:10041` or `runAsUser: 10041` on Kubernetes, the entrypoint skips both steps and
+starts Opal directly, which is what a Pod Security `restricted` namespace (`runAsNonRoot`)
+needs. The volume's ownership is then yours to arrange: give it to uid 10041, or set
+`fsGroup: 10041` on the pod, or Opal will not be able to write its home.
