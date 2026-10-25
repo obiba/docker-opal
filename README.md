@@ -40,6 +40,16 @@ starts over. The network and the volumes are named apart from the default stack'
 than `opal`), so switching from one stack to the other does not mix their homes; both publish
 ports 8880 and 3000 though, so bring one down before starting the other.
 
+Running as a non-root user
+--------------------------
+
+The image starts as root by default: the entrypoint takes ownership of `OPAL_HOME` for the `opal`
+user (uid and gid 10041) and drops to it before starting Opal. Started as that user instead, with
+`--user 10041:10041` or `runAsUser: 10041` on Kubernetes, the entrypoint skips both steps and
+starts Opal directly, which is what a Pod Security `restricted` namespace (`runAsNonRoot`)
+needs. The volume's ownership is then yours to arrange: give it to uid 10041, or set
+`fsGroup: 10041` on the pod, or Opal will not be able to write its home.
+
 All-PostgreSQL setup
 --------------------
 
