@@ -116,6 +116,32 @@ The other databases (`MONGO_*`, `MYSQLDATA_*`, `MARIADBDATA_*`, `POSTGRESDATA_*`
 ones) are unchanged: they hold the data and the identifiers, and are registered in the
 configuration through Opal's REST API on the first run.
 
+### Recovering the embedded database
+
+A power loss, a full disk or a storage failure while Opal writes can damage the embedded
+database file, `data/config/opal-config.mv.db`. Opal then fails to start with an error about its
+configuration database: `File corrupted while reading record`, or `Database may be already in use`
+and `The file is locked` although nothing else uses the file. The image can recover it, with Opal
+stopped:
+
+```
+docker compose stop opal
+docker compose run --rm --no-deps opal recover-config-db
+docker compose start opal
+```
+
+The command exports the database to SQL with the tools of the H2 library that comes with Opal,
+loads the export into a new database file and puts it in place. The `opal` user is recreated with
+its original password, so Opal opens the new file with the password it already has in
+`data/opal-config.xml`. Nothing is deleted: the damaged files and the export are moved to
+`data/config.damaged-<date>` in the volume. Then check that the projects, users and permissions are
+there.
+
+It refuses to run while an Opal has the database open, in this container or another one on the
+same volume. When parts of the file cannot be read, it lists them and changes nothing, as the rows
+they held would be missing from the recovered configuration. `recover-config-db --force` recovers
+what could be read anyway.
+
 OpenTelemetry
 -------------
 
