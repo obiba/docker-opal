@@ -11,3 +11,5 @@ build:
 push:
 	docker image push obiba/opal:$(tag)
 
+java-version:
+	docker run --rm --pull always eclipse-temurin:25-jre-resolute java -version
